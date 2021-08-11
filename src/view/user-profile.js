@@ -1,10 +1,12 @@
-﻿const USER_PROFILE_RATINGS = [
+﻿import { createElement } from '../utils';
+
+const USER_PROFILE_RATINGS = [
   'Novice',
   'Fan',
   'Movie Buff',
 ];
 
-export const createUserProfileTemplate = (films) => {
+const createUserProfileTemplate = (films) => {
   let filmWatched = 0;
   let profileRating = '';
 
@@ -31,3 +33,26 @@ export const createUserProfileTemplate = (films) => {
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>`;
 };
+
+export default class UserProfile {
+  constructor(films) {
+    this._element = null;
+    this._films = films;
+  }
+
+  getTemplate() {
+    return createUserProfileTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,4 +1,6 @@
-﻿export const createMenuTemplate = (films) => {
+﻿import { createElement } from '../utils';
+
+const createSiteMenuTemplate = (films) => {
   let watchListNumber = 0;
   let historyNumber = 0;
   let favoritesNumber = 0;
@@ -19,3 +21,26 @@
     <a href="#stats" class="main-navigation__additional">Stats</a>
   </nav>`;
 };
+
+export default class SiteMenu {
+  constructor(films) {
+    this._element = null;
+    this._films = films;
+  }
+
+  getTemplate() {
+    return createSiteMenuTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

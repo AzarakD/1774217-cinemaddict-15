@@ -1,10 +1,9 @@
 ﻿import dayjs from 'dayjs';
 import {
   getRandomInteger,
-  getRandomUniqElement,
   getRandomFloat,
   getRandomElement,
-  getRandomArray
+  getRandomUniqueSequenceFrom
 } from '../utils';
 
 import {
@@ -22,13 +21,7 @@ import {
 
 const generateDescription = () => {
   const sentenceCount = getRandomInteger(1, 5);
-
-  const descriptionsCopy = [...DESCRIPTIONS];
-  const generatedDescriptions = [];
-
-  for (let i = 0; i < sentenceCount; i++) {
-    generatedDescriptions.push(getRandomUniqElement(descriptionsCopy));
-  }
+  const generatedDescriptions = getRandomUniqueSequenceFrom(DESCRIPTIONS, sentenceCount);
 
   return generatedDescriptions.join(' ');
 };
@@ -86,7 +79,7 @@ const generateFilmInfo = () => {
     releaseDate: generateReleaseDate(),
     runtime: generateRuntime(),
     country: getRandomElement(COUNTRIES),
-    genres: getRandomArray(GENRES),
+    genres: getRandomUniqueSequenceFrom(GENRES),
     description: generateDescription(),
     ageRating: getRandomElement(AGES),
   };

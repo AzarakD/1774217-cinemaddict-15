@@ -1,4 +1,6 @@
-﻿export const createFilmPopupTemplate = ({filmInfo, comments, userDetails}) => {
+﻿import { createElement } from '../utils';
+
+const createFilmPopupTemplate = ({filmInfo, comments, userDetails}) => {
   const genres = filmInfo.genres.map((element) => `<span class="film-details__genre">${element}</span>`);
 
   const userComments = comments.map((element) => (
@@ -124,3 +126,26 @@
     </form>
   </section>`;
 };
+
+export default class FilmPopup {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createFilmPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
