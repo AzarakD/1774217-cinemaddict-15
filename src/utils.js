@@ -25,8 +25,9 @@ const getRandomElement = (array) => array[getRandomInteger(0, array.length - 1)]
 
 const getRandomArray = (array) => {
   const tempArray = array.slice();
-  let newArray = new Array(getRandomInteger(1, array.length)).fill('');
-  newArray = newArray.map(() => getRandomUniqElement(tempArray));
+  const newArray = new Array(getRandomInteger(1, array.length))
+    .fill('')
+    .map(() => getRandomUniqElement(tempArray));
 
   return newArray;
 };

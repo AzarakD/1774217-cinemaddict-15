@@ -23,14 +23,14 @@ import {
 const generateDescription = () => {
   const sentenceCount = getRandomInteger(1, 5);
 
-  const newArray = [...DESCRIPTIONS];
-  const descriptionArray = [];
+  const descriptionsCopy = [...DESCRIPTIONS];
+  const generatedDescriptions = [];
 
   for (let i = 0; i < sentenceCount; i++) {
-    descriptionArray.push(getRandomUniqElement(newArray));
+    generatedDescriptions.push(getRandomUniqElement(descriptionsCopy));
   }
 
-  return descriptionArray.join(' ');
+  return generatedDescriptions.join(' ');
 };
 
 const generatePerson = () => `${getRandomElement(FIRST_NAMES)} ${getRandomElement(SECOND_NAMES)}`;
