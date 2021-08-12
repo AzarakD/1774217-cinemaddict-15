@@ -35,9 +35,6 @@ const renderFilm = (filmContainer, film) => {
     popupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', closePopup);
   };
 
-  filmComponent.getElement().querySelectorAll('.film-card__poster, .film-card__title')
-    .forEach((element) => element.style.cursor = 'pointer');
-
   filmComponent.getElement().querySelectorAll('.film-card__poster, .film-card__title, .film-card__comments')
     .forEach((element) => element.addEventListener('click', createFilmPopup));
 
