@@ -32,7 +32,20 @@ const renderFilm = (filmContainer, film) => {
       siteFooterElement.removeChild(popupComponent.getElement());
     };
 
-    popupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', closePopup);
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        closePopup();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    popupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', () => {
+      closePopup();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    document.addEventListener('keydown', onEscKeyDown);
   };
 
   filmComponent.getElement().querySelectorAll('.film-card__poster, .film-card__title, .film-card__comments')
@@ -76,13 +89,18 @@ if (films.length > CARD_COUNT_PER_STEP) {
   });
 }
 
-const topRatedFilms = [...films].sort((a, b) => b.filmInfo.rating - a.filmInfo.rating);
-const topCommentedFilms = [...films].sort((a, b) => b.comments.length - a.comments.length);
+if (films.length > 1) {
+  const topRatedFilms = [...films].sort((a, b) => b.filmInfo.rating - a.filmInfo.rating);
+  const topCommentedFilms = [...films].sort((a, b) => b.comments.length - a.comments.length);
 
-renderFilm(topRatedFilmContainer, topRatedFilms[0]);
-renderFilm(topRatedFilmContainer, topRatedFilms[1]);
-renderFilm(topCommentedFilmContainer, topCommentedFilms[0]);
-renderFilm(topCommentedFilmContainer, topCommentedFilms[1]);
+  renderFilm(topRatedFilmContainer, topRatedFilms[0]);
+  renderFilm(topRatedFilmContainer, topRatedFilms[1]);
+  renderFilm(topCommentedFilmContainer, topCommentedFilms[0]);
+  renderFilm(topCommentedFilmContainer, topCommentedFilms[1]);
+} else if (films.length === 1) {
+  renderFilm(topRatedFilmContainer, films[0]);
+  renderFilm(topCommentedFilmContainer, films[0]);
+}
 
 const footerContainer = siteFooterElement.querySelector('.footer__statistics');
 
