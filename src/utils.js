@@ -1,17 +1,36 @@
-﻿export const RenderPosition = {
+﻿import Abstract from './view/abstract.js';
+
+export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
+  AFTEREND: 'afterend',
   BEFOREEND: 'beforeend',
 };
 
+export const Sort = {
+  byRaiting: (a, b) => b.filmInfo.rating - a.filmInfo.rating,
+  byComments: (a, b) => b.comments.length - a.comments.length,
+};
+
 export const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
+  if (container instanceof Abstract) {
+    container = container.getElement();
   }
+
+  if (element instanceof Abstract) {
+    element = element.getElement();
+  }
+
+  if (container) {
+    container.insertAdjacentElement(place, element);
+  }
+  // switch (place) {
+  //   case RenderPosition.AFTERBEGIN:
+  //     container.prepend(element);
+  //     break;
+  //   case RenderPosition.BEFOREEND:
+  //     container.append(element);
+  //     break;
+  // }
 };
 
 export const createElement = (template) => {
@@ -19,6 +38,15 @@ export const createElement = (template) => {
   newElement.innerHTML = template;
 
   return newElement.firstChild;
+};
+
+export const remove = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error('Can remove only components');
+  }
+
+  component.getElement().remove();
+  component.removeElement();
 };
 
 export const getRandomInteger = (a = 0, b = 1) => {
