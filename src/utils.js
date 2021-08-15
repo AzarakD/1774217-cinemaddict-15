@@ -7,8 +7,8 @@ export const RenderPosition = {
 };
 
 export const Sort = {
-  byRaiting: (a, b) => b.filmInfo.rating - a.filmInfo.rating,
-  byComments: (a, b) => b.comments.length - a.comments.length,
+  byRating: (a, b) => b.filmInfo.rating - a.filmInfo.rating,
+  byCommentAmount: (a, b) => b.comments.length - a.comments.length,
 };
 
 export const render = (container, element, place) => {
@@ -23,14 +23,6 @@ export const render = (container, element, place) => {
   if (container) {
     container.insertAdjacentElement(place, element);
   }
-  // switch (place) {
-  //   case RenderPosition.AFTERBEGIN:
-  //     container.prepend(element);
-  //     break;
-  //   case RenderPosition.BEFOREEND:
-  //     container.append(element);
-  //     break;
-  // }
 };
 
 export const createElement = (template) => {

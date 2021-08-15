@@ -86,9 +86,9 @@ if (films.length > CARD_COUNT_PER_STEP) {
   });
 }
 
-const renderExtra = (container, elements, callback) => {
+const renderExtra = (container, elements, sortFunction) => {
   if (elements.length > 1) {
-    const sortedElements = [...elements].sort(callback);
+    const sortedElements = [...elements].sort(sortFunction);
 
     renderFilm(container, sortedElements[0]);
     renderFilm(container, sortedElements[1]);
@@ -97,7 +97,7 @@ const renderExtra = (container, elements, callback) => {
   }
 };
 
-renderExtra(filmBoardComponent.getTopRatedFilmContainer(), films, Sort.byRaiting);
-renderExtra(filmBoardComponent.getTopCommentedFilmContainer(), films, Sort.byComments);
+renderExtra(filmBoardComponent.getTopRatedFilmContainer(), films, Sort.byRating);
+renderExtra(filmBoardComponent.getTopCommentedFilmContainer(), films, Sort.byCommentAmount);
 
 render(footerStatistic, new FilmCounterView(films), RenderPosition.BEFOREEND);
