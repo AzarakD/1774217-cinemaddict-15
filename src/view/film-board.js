@@ -1,12 +1,7 @@
-﻿import { createElement } from '../utils';
+﻿import AbstractView from './abstract.js';
 
 const createFilmBoardTemplate = (films) => (
   `<section class="films">
-    <section class="films-list">
-      <h2 class="films-list__title${films.length > 0 ? ' visually-hidden' : ''}">There are no movies in our database</h2>
-      <div class="films-list__container"></div>
-    </section>
-
     ${films.length > 0 ? `<section class="films-list films-list--extra">
       <h2 class="films-list__title">Top rated</h2>
       <div class="films-list__container top-rated"></div>
@@ -19,9 +14,9 @@ const createFilmBoardTemplate = (films) => (
   </section>`
 );
 
-export default class FilmBoard {
+export default class FilmBoard extends AbstractView {
   constructor(films) {
-    this._element = null;
+    super();
     this._films = films;
   }
 
@@ -29,15 +24,19 @@ export default class FilmBoard {
     return createFilmBoardTemplate(this._films);
   }
 
-  getElement() {
+  getTopRatedFilmContainer() {
     if (!this._element) {
-      this._element = createElement(this.getTemplate());
+      this.getElement();
     }
 
-    return this._element;
+    return this._element.querySelector('.top-rated');
   }
 
-  removeElement() {
-    this._element = null;
+  getTopCommentedFilmContainer() {
+    if (!this._element) {
+      this.getElement();
+    }
+
+    return this._element.querySelector('.top-commented');
   }
 }
