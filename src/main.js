@@ -15,41 +15,41 @@ const CARD_COUNT_PER_STEP = 5;
 
 const films = new Array(CARD_COUNT).fill().map(generateFilmCard);
 
-const siteHeaderElement = document.querySelector('.header');
-const siteMainElement = document.querySelector('.main');
-const footerStatistic = document.querySelector('.footer__statistics');
+const bodyElement = document.querySelector('body');
+const siteHeaderElement = bodyElement.querySelector('.header');
+const siteMainElement = bodyElement.querySelector('.main');
+const footerStatistic = bodyElement.querySelector('.footer__statistics');
+
+const createFilmPopup = (film) => {
+  const popupComponent = new FilmPopupView(film);
+
+  bodyElement.classList.add('hide-overflow');
+  render(bodyElement, popupComponent, RenderPosition.BEFOREEND);
+
+  const closePopup = () => {
+    bodyElement.classList.remove('hide-overflow');
+    remove(popupComponent);
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      closePopup();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
+  popupComponent.setClickHandler(() => {
+    closePopup();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  document.addEventListener('keydown', onEscKeyDown);
+};
 
 const renderFilm = (filmContainer, film) => {
   const filmComponent = new FilmCardView(film);
-
-  const createFilmPopup = () => {
-    const popupComponent = new FilmPopupView(film);
-
-    document.querySelector('body').classList.add('hide-overflow');
-    render(footerStatistic, popupComponent, RenderPosition.AFTEREND);
-
-    const closePopup = () => {
-      document.querySelector('body').classList.remove('hide-overflow');
-      remove(popupComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        closePopup();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    popupComponent.setClickHandler(() => {
-      closePopup();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    document.addEventListener('keydown', onEscKeyDown);
-  };
-
-  filmComponent.setClickHandler(createFilmPopup);
+  filmComponent.setClickHandler(() => createFilmPopup(film));
 
   render(filmContainer, filmComponent, RenderPosition.BEFOREEND);
 };
