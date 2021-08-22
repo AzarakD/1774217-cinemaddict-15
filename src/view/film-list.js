@@ -1,20 +1,15 @@
 ﻿import AbstractView from './abstract.js';
 
-const createFilmListTemplate = (films) => (
+const createFilmListTemplate = () => (
   `<section class="films-list">
-    <h2 class="films-list__title${films.length > 0 ? ' visually-hidden' : ''}">There are no movies in our database</h2>
+    <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
     <div class="films-list__container"></div>
   </section>`
 );
 
 export default class FilmList extends AbstractView {
-  constructor(films) {
-    super();
-    this._films = films;
-  }
-
   getTemplate() {
-    return createFilmListTemplate(this._films);
+    return createFilmListTemplate();
   }
 
   getFilmContainer() {
