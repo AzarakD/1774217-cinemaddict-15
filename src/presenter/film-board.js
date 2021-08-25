@@ -1,4 +1,5 @@
 ﻿import FilmPresenter from './film.js';
+import FilmPopupPresenter from './film-popup.js';
 import FilmBoardView from '../view/film-board.js';
 import FilmListView from '../view/film-list.js';
 import FilmEmptyListView from '../view/film-empty-list.js';
@@ -8,12 +9,18 @@ import ExtraTopRatedView from '../view/extra-top-rated.js';
 import ExtraTopCommentedView from '../view/extra-top-commented.js';
 import { render, remove, updateItem, RenderPosition, Sort } from '../utils.js';
 
+// const Mode = {
+//   DEFAULT: 'DEFAULT',
+//   DETAILED: 'DETAILED',
+// };
+
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmBoard {
   constructor(container) {
     this._filmBoardContainer = container;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
+
     this._filmPresenterMap = new Map();
     this._extraTopRatedPresenterMap = new Map();
     this._extraTopCommentedPresenterMap = new Map();
@@ -31,30 +38,30 @@ export default class FilmBoard {
 
     this._filmListContainer = this._filmListComponent.getFilmContainer();
 
+    this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
-    this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreBtnClick = this._handleShowMoreBtnClick.bind(this);
   }
 
   init(films) {
     this._films = films.slice();
+    this._filmPopupPresenter = new FilmPopupPresenter(this._handleFilmChange);
 
     render(this._filmBoardContainer, this._filmBoardComponent, RenderPosition.BEFOREEND);
     this._renderFilmBoard();
   }
 
-  _handleModeChange() {
-    this._presenterMaps.forEach((presenterMap) => presenterMap.forEach((element) => element.resetView()));
-  }
-
   _handleFilmChange(updatedFilm) {
     this._films = updateItem(this._films, updatedFilm);
-    // webpack ругается
-    // this._presenterMaps.forEach((presenterMap) => presenterMap.get(updatedFilm.id)?.init(updatedFilm));
+
     this._presenterMaps.forEach((presenterMap) => {
       const film = presenterMap.get(updatedFilm.id);
       return film && film.init(updatedFilm);
     });
+
+    if (this._filmPopupPresenter.filmPopupComponent && this._filmPopupPresenter.film === updatedFilm.id) {
+      this._filmPopupPresenter.init(updatedFilm);
+    }
   }
 
   _handleShowMoreBtnClick() {
@@ -90,10 +97,14 @@ export default class FilmBoard {
     render(this._filmBoardComponent, filmEmptyListComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderFilm(container, film, presenter) {
-    const filmPresenter = new FilmPresenter(container, this._handleFilmChange, this._handleModeChange);
+  _handleFilmCardClick(film, presenterMap) {
+    this._filmPopupPresenter.init(presenterMap.get(film.id).film);
+  }
+
+  _renderFilm(container, film, presenterMap) {
+    const filmPresenter = new FilmPresenter(container, this._handleFilmChange, () => this._handleFilmCardClick(film, presenterMap));
     filmPresenter.init(film);
-    presenter.set(film.id, filmPresenter);
+    presenterMap.set(film.id, filmPresenter);
   }
 
   _renderFilms(from, to) {
