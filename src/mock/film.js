@@ -1,4 +1,5 @@
 ﻿import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 import {
   getRandomInteger,
   getRandomFloat,
@@ -93,7 +94,7 @@ const generateUserDetails = () => ({
 });
 
 const generateComment = () => ({
-  id: getRandomInteger(0, 100),
+  id: nanoid(),
   author: generatePerson(),
   comment: getRandomElement(COMMENTS),
   date: generateDate(),
@@ -107,7 +108,7 @@ const generateComments = () => {
 };
 
 export const generateFilmCard = () => ({
-  id: getRandomInteger(0, 100),
+  id: nanoid(),
   comments: generateComments(),
   filmInfo: generateFilmInfo(),
   userDetails: generateUserDetails(),
