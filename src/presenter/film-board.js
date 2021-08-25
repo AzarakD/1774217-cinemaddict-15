@@ -14,9 +14,15 @@ export default class FilmBoard {
   constructor(container) {
     this._filmBoardContainer = container;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    this._filmPresenter = new Map();
-    this._extraTopRatedPresenter = new Map();
-    this._extraTopCommentedPresenter = new Map();
+    this._filmPresenterMap = new Map();
+    this._extraTopRatedPresenterMap = new Map();
+    this._extraTopCommentedPresenterMap = new Map();
+
+    this._presenterMaps = [
+      this._filmPresenterMap,
+      this._extraTopRatedPresenterMap,
+      this._extraTopCommentedPresenterMap,
+    ];
 
     this._filmBoardComponent = new FilmBoardView();
     this._filmListComponent = new FilmListView();
@@ -38,21 +44,17 @@ export default class FilmBoard {
   }
 
   _handleModeChange() {
-    this._filmPresenter.forEach((element) => element.resetView());
-    this._extraTopRatedPresenter.forEach((element) => element.resetView());
-    this._extraTopCommentedPresenter.forEach((element) => element.resetView());
+    this._presenterMaps.forEach((presenterMap) => presenterMap.forEach((element) => element.resetView()));
   }
 
   _handleFilmChange(updatedFilm) {
     this._films = updateItem(this._films, updatedFilm);
-
-    const presenters = [
-      this._filmPresenter.get(updatedFilm.id),
-      this._extraTopRatedPresenter.get(updatedFilm.id),
-      this._extraTopCommentedPresenter.get(updatedFilm.id),
-    ];
-
-    presenters.forEach((element) => element && element.init(updatedFilm));
+    // webpack ругается
+    // this._presenterMaps.forEach((presenterMap) => presenterMap.get(updatedFilm.id)?.init(updatedFilm));
+    this._presenterMaps.forEach((presenterMap) => {
+      const film = presenterMap.get(updatedFilm.id);
+      return film && film.init(updatedFilm);
+    });
   }
 
   _handleShowMoreBtnClick() {
@@ -97,20 +99,18 @@ export default class FilmBoard {
   _renderFilms(from, to) {
     this._films
       .slice(from, to)
-      .forEach((film) => this._renderFilm(this._filmListContainer, film, this._filmPresenter));
+      .forEach((film) => this._renderFilm(this._filmListContainer, film, this._filmPresenterMap));
   }
 
-  _clearPresenter(presenter) {
-    presenter.forEach((element) => element.destroy());
-    presenter.clear();
+  _clearPresenter(presenterMap) {
+    presenterMap.forEach((element) => element.destroy());
+    presenterMap.clear();
   }
 
   _clearFilmList() {
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
 
-    this._clearPresenter(this._filmPresenter);
-    this._clearPresenter(this._extraTopRatedPresenter);
-    this._clearPresenter(this._extraTopCommentedPresenter);
+    this._presenterMaps.forEach((presenterMap) => this._clearPresenter(presenterMap));
 
     remove(this._showMoreBtnComponent);
     remove(this._extraTopRatedComponent);
@@ -140,13 +140,13 @@ export default class FilmBoard {
     render(this._filmBoardComponent, this._extraTopCommentedComponent, RenderPosition.BEFOREEND);
 
     if (this._films.length > 1) {
-      this._renderFilm(this._extraTopRatedComponent.getExtraContainer(), films.sort(Sort.byRating)[0], this._extraTopRatedPresenter);
-      this._renderFilm(this._extraTopRatedComponent.getExtraContainer(), films.sort(Sort.byRating)[1], this._extraTopRatedPresenter);
-      this._renderFilm(this._extraTopCommentedComponent.getExtraContainer(), films.sort(Sort.byCommentAmount)[0], this._extraTopCommentedPresenter);
-      this._renderFilm(this._extraTopCommentedComponent.getExtraContainer(), films.sort(Sort.byCommentAmount)[1], this._extraTopCommentedPresenter);
+      this._renderFilm(this._extraTopRatedComponent.getExtraContainer(), films.sort(Sort.byRating)[0], this._extraTopRatedPresenterMap);
+      this._renderFilm(this._extraTopRatedComponent.getExtraContainer(), films.sort(Sort.byRating)[1], this._extraTopRatedPresenterMap);
+      this._renderFilm(this._extraTopCommentedComponent.getExtraContainer(), films.sort(Sort.byCommentAmount)[0], this._extraTopCommentedPresenterMap);
+      this._renderFilm(this._extraTopCommentedComponent.getExtraContainer(), films.sort(Sort.byCommentAmount)[1], this._extraTopCommentedPresenterMap);
     } else if (this._films.length === 1) {
-      this._renderFilm(this._extraTopRatedComponent.getExtraContainer(), films[0], this._extraTopRatedPresenter);
-      this._renderFilm(this._extraTopCommentedComponent.getExtraContainer(), films[0], this._extraTopCommentedPresenter);
+      this._renderFilm(this._extraTopRatedComponent.getExtraContainer(), films[0], this._extraTopRatedPresenterMap);
+      this._renderFilm(this._extraTopCommentedComponent.getExtraContainer(), films[0], this._extraTopCommentedPresenterMap);
     }
   }
 }

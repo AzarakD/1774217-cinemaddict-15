@@ -125,38 +125,20 @@ export default class Film {
   }
 
   _handleWatchlistClick() {
-    this._changeData(
-      Object.assign({}, this._film, {
-        userDetails: {
-          isInWatchlist: !this._film.userDetails.isInWatchlist,
-          isWatched: this._film.userDetails.isWatched,
-          isFavorite: this._film.userDetails.isFavorite,
-        },
-      }),
-    );
+    this._changeData({
+      ...this._film, userDetails: {...this._film.userDetails, isInWatchlist: !this._film.userDetails.isInWatchlist},
+    });
   }
 
   _handleWatchedClick() {
-    this._changeData(
-      Object.assign({}, this._film, {
-        userDetails: {
-          isInWatchlist: this._film.userDetails.isInWatchlist,
-          isWatched: !this._film.userDetails.isWatched,
-          isFavorite: this._film.userDetails.isFavorite,
-        },
-      }),
-    );
+    this._changeData({
+      ...this._film, userDetails: {...this._film.userDetails, isWatched: !this._film.userDetails.isWatched},
+    });
   }
 
   _handleFavoriteClick() {
-    this._changeData(
-      Object.assign({}, this._film, {
-        userDetails: {
-          isInWatchlist: this._film.userDetails.isInWatchlist,
-          isWatched: this._film.userDetails.isWatched,
-          isFavorite: !this._film.userDetails.isFavorite,
-        },
-      }),
-    );
+    this._changeData({
+      ...this._film, userDetails: {...this._film.userDetails, isFavorite: !this._film.userDetails.isFavorite},
+    });
   }
 }
