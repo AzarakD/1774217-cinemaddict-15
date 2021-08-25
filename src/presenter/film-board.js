@@ -9,11 +9,6 @@ import ExtraTopRatedView from '../view/extra-top-rated.js';
 import ExtraTopCommentedView from '../view/extra-top-commented.js';
 import { render, remove, updateItem, RenderPosition, Sort } from '../utils.js';
 
-// const Mode = {
-//   DEFAULT: 'DEFAULT',
-//   DETAILED: 'DETAILED',
-// };
-
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmBoard {

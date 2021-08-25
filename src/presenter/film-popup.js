@@ -87,23 +87,16 @@ export default class FilmPopup {
   _setFilmPopupHandlers() {
     this._filmPopupComponent.setCloseClickHandler(this._closePopup);
 
-    // Подумать, как добавить тогл или аналог
     this._filmPopupComponent.setWatchlistClickHandler(() => {
       this._handleWatchlistClick();
-      // this._filmPopupComponent.getElement().querySelector('.film-details__control-button--watchlist')
-      //   .classList.toggle('film-details__control-button--active');
     });
 
     this._filmPopupComponent.setWatchedClickHandler(() => {
       this._handleWatchedClick();
-      // this._filmPopupComponent.getElement().querySelector('.film-details__control-button--watched')
-      //   .classList.toggle('film-details__control-button--active');
     });
 
     this._filmPopupComponent.setFavoriteClickHandler(() => {
       this._handleFavoriteClick();
-      // this._filmPopupComponent.getElement().querySelector('.film-details__control-button--favorite')
-      //   .classList.toggle('film-details__control-button--active');
     });
   }
 }
