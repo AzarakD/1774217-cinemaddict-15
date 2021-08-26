@@ -1,4 +1,11 @@
 ﻿import Abstract from './view/abstract.js';
+import dayjs from 'dayjs';
+
+export const SortType = {
+  DEFAULT: 'default',
+  BY_DATE: 'date',
+  BY_RATING: 'rating',
+};
 
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
@@ -9,6 +16,7 @@ export const RenderPosition = {
 export const Sort = {
   byRating: (a, b) => b.filmInfo.rating - a.filmInfo.rating,
   byCommentAmount: (a, b) => b.comments.length - a.comments.length,
+  byDate: (a, b) => dayjs(b.filmInfo.releaseDate).diff(a.filmInfo.releaseDate),
 };
 
 export const render = (container, element, place) => {

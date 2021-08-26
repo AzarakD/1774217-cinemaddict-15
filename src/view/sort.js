@@ -1,10 +1,5 @@
 ﻿import AbstractView from './abstract.js';
-
-const sortTypes = [
-  'default',
-  'date',
-  'rating',
-];
+import { SortType } from '../utils.js';
 
 const createSortButton = (sortType) => (
   `<li><a href="#" class="sort__button" data-sort-type="${sortType}">Sort by ${sortType}</a></li>`
@@ -14,7 +9,7 @@ const createSortButton = (sortType) => (
 
 const createSortTemplate = () => (
   `<ul class="sort">
-    ${sortTypes.map((sortType) => createSortButton(sortType)).join(' ')}
+    ${Object.values(SortType).map((sortType) => createSortButton(sortType)).join(' ')}
   </ul>`
 );
 
