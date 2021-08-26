@@ -5,8 +5,6 @@ const createSortButton = (sortType) => (
   `<li><a href="#" class="sort__button" data-sort-type="${sortType}">Sort by ${sortType}</a></li>`
 );
 
-// sort__button--active
-
 const createSortTemplate = () => (
   `<ul class="sort">
     ${Object.values(SortType).map((sortType) => createSortButton(sortType)).join(' ')}
@@ -16,6 +14,9 @@ const createSortTemplate = () => (
 export default class Sort extends AbstractView{
   constructor() {
     super();
+
+    this._activeButton = this.getElement().querySelectorAll('A')[0];
+    this._activeButton.classList.add('sort__button--active');
 
     this._sortClickHandler = this._sortClickHandler.bind(this);
   }
@@ -30,6 +31,9 @@ export default class Sort extends AbstractView{
     }
 
     evt.preventDefault();
+    this._activeButton.classList.remove('sort__button--active');
+    this._activeButton = evt.target;
+    this._activeButton.classList.add('sort__button--active');
     this._callback.click(evt.target.dataset.sortType);
   }
 
