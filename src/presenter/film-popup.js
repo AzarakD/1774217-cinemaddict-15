@@ -38,7 +38,7 @@ export default class FilmPopup {
     return this._filmPopupComponent;
   }
 
-  get film() {
+  get filmId() {
     return this._film.id;
   }
 

@@ -58,7 +58,7 @@ export default class FilmBoard {
       return film && film.init(updatedFilm);
     });
 
-    if (this._filmPopupPresenter.filmPopupComponent && this._filmPopupPresenter.film === updatedFilm.id) {
+    if (this._filmPopupPresenter.filmPopupComponent && this._filmPopupPresenter.filmId === updatedFilm.id) {
       this._filmPopupPresenter.init(updatedFilm);
     }
   }
