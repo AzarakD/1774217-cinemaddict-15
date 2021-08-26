@@ -142,9 +142,6 @@ export default class FilmBoard {
   _clearPresenter(presenterMap) {
     presenterMap.forEach((element) => element.destroy());
     presenterMap.clear();
-    // if (this._showMoreBtnComponent) {
-    //   remove(this._showMoreBtnComponent);
-    // }
   }
 
   _clearFilmList() {
