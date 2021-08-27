@@ -43,7 +43,6 @@ export default class FilmBoard {
   init(films) {
     this._films = films.slice();
     this._sourcedFilms = films.slice();
-    this._filmPopupPresenter = new FilmPopupPresenter(this._handleFilmChange);
 
     render(this._filmBoardContainer, this._filmBoardComponent, RenderPosition.BEFOREEND);
     this._renderFilmBoard();
@@ -57,10 +56,6 @@ export default class FilmBoard {
       const film = presenterMap.get(updatedFilm.id);
       return film && film.init(updatedFilm);
     });
-
-    if (this._filmPopupPresenter.filmPopupComponent && this._filmPopupPresenter.filmId === updatedFilm.id) {
-      this._filmPopupPresenter.init(updatedFilm);
-    }
   }
 
   _handleShowMoreBtnClick() {
@@ -84,7 +79,7 @@ export default class FilmBoard {
   }
 
   _sortFilms(sortType) {
-    if (sortType === SortType.BY_DEFAULT) {
+    if (sortType === SortType.DEFAULT) {
       this._films = this._sourcedFilms.slice();
       return;
     }
@@ -96,7 +91,6 @@ export default class FilmBoard {
     if (this._currentSortType === sortType) {
       return;
     }
-
     this._sortFilms(sortType);
     this._clearFilmList();
     this._renderFilmList();
@@ -118,6 +112,10 @@ export default class FilmBoard {
   }
 
   _handleFilmCardClick(film, presenterMap) {
+    if (this._filmPopupPresenter) {
+      this._filmPopupPresenter.destroy();
+    }
+    this._filmPopupPresenter = new FilmPopupPresenter(this._handleFilmChange);
     this._filmPopupPresenter.init(presenterMap.get(film.id).film);
   }
 

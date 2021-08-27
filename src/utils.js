@@ -14,12 +14,6 @@ export const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-// export const Sort = {
-//   byRating: (a, b) => b.filmInfo.rating - a.filmInfo.rating,
-//   byCommentAmount: (a, b) => b.comments.length - a.comments.length,
-//   byDate: (a, b) => dayjs(b.filmInfo.releaseDate).diff(a.filmInfo.releaseDate),
-// };
-
 export const SortStrategy = {
   [SortType.BY_RATING]: (a, b) => b.filmInfo.rating - a.filmInfo.rating,
   [SortType.BY_COMMENT_AMOUNT]: (a, b) => b.comments.length - a.comments.length,

@@ -1,45 +1,23 @@
 ﻿import FilmPopupView from '../view/film-popup.js';
-import { render, replace, remove, RenderPosition } from '../utils.js';
+import { render, remove, RenderPosition } from '../utils.js';
 
 export default class FilmPopup {
   constructor(changeData) {
     this._changeData = changeData;
 
     this._filmPopupContainer = document.querySelector('body');
-    this._filmPopupComponent = null;
 
     this._closePopup = this._closePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-    this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
-    this._handleWatchedClick = this._handleWatchedClick.bind(this);
-    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(film) {
     this._film = film;
 
-    const prevFilmPopupComponent = this._filmPopupComponent;
     this._filmPopupComponent = new FilmPopupView(this._film);
+
     this._setFilmPopupHandlers();
-
-    if (prevFilmPopupComponent === null) {
-      this._renderPopup();
-      return;
-    }
-
-    if (this._filmPopupContainer.contains(prevFilmPopupComponent.getElement())) {
-      replace(this._filmPopupComponent, prevFilmPopupComponent);
-    }
-
-    remove(prevFilmPopupComponent);
-  }
-
-  get filmPopupComponent() {
-    return this._filmPopupComponent;
-  }
-
-  get filmId() {
-    return this._film.id;
+    this._renderPopup();
   }
 
   destroy() {
@@ -54,7 +32,6 @@ export default class FilmPopup {
 
   _closePopup() {
     remove(this._filmPopupComponent);
-    this._filmPopupComponent = null;
     this._filmPopupContainer.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._onEscKeyDown);
   }
@@ -67,21 +44,24 @@ export default class FilmPopup {
   }
 
   _handleWatchlistClick() {
-    this._changeData({
+    this._film = {
       ...this._film, userDetails: {...this._film.userDetails, isInWatchlist: !this._film.userDetails.isInWatchlist},
-    });
+    };
+    this._changeData(this._film);
   }
 
   _handleWatchedClick() {
-    this._changeData({
+    this._film = {
       ...this._film, userDetails: {...this._film.userDetails, isWatched: !this._film.userDetails.isWatched},
-    });
+    };
+    this._changeData(this._film);
   }
 
   _handleFavoriteClick() {
-    this._changeData({
+    this._film = {
       ...this._film, userDetails: {...this._film.userDetails, isFavorite: !this._film.userDetails.isFavorite},
-    });
+    };
+    this._changeData(this._film);
   }
 
   _setFilmPopupHandlers() {
@@ -89,14 +69,20 @@ export default class FilmPopup {
 
     this._filmPopupComponent.setWatchlistClickHandler(() => {
       this._handleWatchlistClick();
+      this._filmPopupComponent.getElement().querySelector('.film-details__control-button--watchlist')
+        .classList.toggle('film-details__control-button--active');
     });
 
     this._filmPopupComponent.setWatchedClickHandler(() => {
       this._handleWatchedClick();
+      this._filmPopupComponent.getElement().querySelector('.film-details__control-button--watched')
+        .classList.toggle('film-details__control-button--active');
     });
 
     this._filmPopupComponent.setFavoriteClickHandler(() => {
       this._handleFavoriteClick();
+      this._filmPopupComponent.getElement().querySelector('.film-details__control-button--favorite')
+        .classList.toggle('film-details__control-button--active');
     });
   }
 }
