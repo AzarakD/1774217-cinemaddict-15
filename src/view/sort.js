@@ -7,7 +7,7 @@ const createSortButton = (sortType) => (
 
 const createSortTemplate = () => (
   `<ul class="sort">
-    ${Object.values(SortType).map((sortType) => createSortButton(sortType)).join(' ')}
+    ${Object.values(SortType).slice(0, 3).map((sortType) => createSortButton(sortType)).join(' ')}
   </ul>`
 );
 

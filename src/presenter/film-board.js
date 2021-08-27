@@ -7,7 +7,7 @@ import SortView from '../view/sort.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import ExtraTopRatedView from '../view/extra-top-rated.js';
 import ExtraTopCommentedView from '../view/extra-top-commented.js';
-import { render, remove, updateItem, RenderPosition, Sort, SortType } from '../utils.js';
+import { render, remove, updateItem, RenderPosition, SortStrategy, SortType } from '../utils.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
@@ -84,17 +84,11 @@ export default class FilmBoard {
   }
 
   _sortFilms(sortType) {
-    switch (sortType) {
-      case SortType.BY_DATE:
-        this._films.sort(Sort.byDate);
-        break;
-      case SortType.BY_RATING:
-        this._films.sort(Sort.byRating);
-        break;
-      default:
-        this._films = this._sourcedFilms.slice();
+    if (sortType === SortType.BY_DEFAULT) {
+      this._films = this._sourcedFilms.slice();
+      return;
     }
-
+    this._films.sort(SortStrategy[sortType]);
     this._currentSortType = sortType;
   }
 
@@ -172,18 +166,22 @@ export default class FilmBoard {
 
     this._extraTopRatedComponent = new ExtraTopRatedView();
     this._extraTopCommentedComponent = new ExtraTopCommentedView();
+    const extraTopRatedContainer = this._extraTopRatedComponent.getExtraContainer();
+    const extraTopCommentedContainer = this._extraTopCommentedComponent.getExtraContainer();
+    const sortByRating = SortStrategy[SortType.BY_RATING];
+    const sortByCommentAmount = SortStrategy[SortType.BY_COMMENT_AMOUNT];
 
     render(this._filmBoardComponent, this._extraTopRatedComponent, RenderPosition.BEFOREEND);
     render(this._filmBoardComponent, this._extraTopCommentedComponent, RenderPosition.BEFOREEND);
 
     if (this._films.length > 1) {
-      this._renderFilm(this._extraTopRatedComponent.getExtraContainer(), films.sort(Sort.byRating)[0], this._extraTopRatedPresenterMap);
-      this._renderFilm(this._extraTopRatedComponent.getExtraContainer(), films.sort(Sort.byRating)[1], this._extraTopRatedPresenterMap);
-      this._renderFilm(this._extraTopCommentedComponent.getExtraContainer(), films.sort(Sort.byCommentAmount)[0], this._extraTopCommentedPresenterMap);
-      this._renderFilm(this._extraTopCommentedComponent.getExtraContainer(), films.sort(Sort.byCommentAmount)[1], this._extraTopCommentedPresenterMap);
+      this._renderFilm(extraTopRatedContainer, films.sort(sortByRating)[0], this._extraTopRatedPresenterMap);
+      this._renderFilm(extraTopRatedContainer, films.sort(sortByRating)[1], this._extraTopRatedPresenterMap);
+      this._renderFilm(extraTopCommentedContainer, films.sort(sortByCommentAmount)[0], this._extraTopCommentedPresenterMap);
+      this._renderFilm(extraTopCommentedContainer, films.sort(sortByCommentAmount)[1], this._extraTopCommentedPresenterMap);
     } else if (this._films.length === 1) {
-      this._renderFilm(this._extraTopRatedComponent.getExtraContainer(), films[0], this._extraTopRatedPresenterMap);
-      this._renderFilm(this._extraTopCommentedComponent.getExtraContainer(), films[0], this._extraTopCommentedPresenterMap);
+      this._renderFilm(extraTopRatedContainer, films[0], this._extraTopRatedPresenterMap);
+      this._renderFilm(extraTopCommentedContainer, films[0], this._extraTopCommentedPresenterMap);
     }
   }
 }
