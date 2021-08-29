@@ -1,5 +1,6 @@
 ﻿import FilmPresenter from './film.js';
 import FilmPopupPresenter from './film-popup.js';
+import SiteMenuView from '../view/site-menu.js';
 import FilmBoardView from '../view/film-board.js';
 import FilmListView from '../view/film-list.js';
 import FilmEmptyListView from '../view/film-empty-list.js';
@@ -44,7 +45,7 @@ export default class FilmBoard {
     this._films = films.slice();
     this._sourcedFilms = films.slice();
 
-    render(this._filmBoardContainer, this._filmBoardComponent, RenderPosition.BEFOREEND);
+    this._renderSiteMenu();
     this._renderFilmBoard();
   }
 
@@ -56,6 +57,9 @@ export default class FilmBoard {
       const film = presenterMap.get(updatedFilm.id);
       return film && film.init(updatedFilm);
     });
+
+    remove(this._siteMenuComponent);
+    this._renderSiteMenu();
   }
 
   _handleShowMoreBtnClick() {
@@ -97,17 +101,24 @@ export default class FilmBoard {
     this._renderExtra();
   }
 
+  _renderSiteMenu() {
+    this._siteMenuComponent = new SiteMenuView(this._films);
+    render(this._filmBoardContainer, this._siteMenuComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _renderSort() {
-    render(this._filmBoardContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
+    render(this._filmBoardContainer, this._sortComponent, RenderPosition.BEFOREEND);
     this._sortComponent.setSortClickHandler(this._handleSortClick);
   }
 
   _renderFilmListContainer() {
+    render(this._filmBoardContainer, this._filmBoardComponent, RenderPosition.BEFOREEND);
     render(this._filmBoardComponent, this._filmListComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderEmptyFilmList() {
     const filmEmptyListComponent = new FilmEmptyListView();
+    render(this._filmBoardContainer, this._filmBoardComponent, RenderPosition.BEFOREEND);
     render(this._filmBoardComponent, filmEmptyListComponent, RenderPosition.AFTERBEGIN);
   }
 
