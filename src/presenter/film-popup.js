@@ -1,4 +1,5 @@
 ﻿import FilmPopupView from '../view/film-popup.js';
+import PopupCommentView from '../view/popup-comment.js';
 import { render, remove, RenderPosition } from '../utils.js';
 
 export default class FilmPopup {
@@ -15,6 +16,7 @@ export default class FilmPopup {
     this._film = film;
 
     this._filmPopupComponent = new FilmPopupView(this._film);
+    this._popupCommentComponent = new PopupCommentView(this._film);
 
     this._setFilmPopupHandlers();
     this._renderPopup();
@@ -26,7 +28,10 @@ export default class FilmPopup {
 
   _renderPopup() {
     this._filmPopupContainer.classList.add('hide-overflow');
+
     render(this._filmPopupContainer, this._filmPopupComponent, RenderPosition.BEFOREEND);
+    render(this._filmPopupComponent.commentContainer, this._popupCommentComponent, RenderPosition.BEFOREEND);
+
     document.addEventListener('keydown', this._onEscKeyDown);
   }
 
