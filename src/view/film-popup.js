@@ -1,6 +1,6 @@
 ﻿import AbstractView from './abstract.js';
 
-const createFilmPopupTemplate = ({filmInfo, userDetails}) => {
+const createFilmPopupTemplate = ({filmInfo}) => {
   const genres = filmInfo.genres.map((element) => `<span class="film-details__genre">${element}</span>`);
 
   // const userComments = comments.map((element) => (
@@ -78,12 +78,6 @@ const createFilmPopupTemplate = ({filmInfo, userDetails}) => {
             <p class="film-details__film-description">${filmInfo.description}</p>
           </div>
         </div>
-
-        <section class="film-details__controls">
-          <button type="button" class="film-details__control-button film-details__control-button--watchlist${userDetails.isInWatchlist ? ' film-details__control-button--active' : ''}" id="watchlist" name="watchlist">Add to watchlist</button>
-          <button type="button" class="film-details__control-button film-details__control-button--watched${userDetails.isWatched ? ' film-details__control-button--active' : ''}" id="watched" name="watched">Already watched</button>
-          <button type="button" class="film-details__control-button film-details__control-button--favorite${userDetails.isFavorite ? ' film-details__control-button--active' : ''}" id="favorite" name="favorite">Add to favorites</button>
-        </section>
       </div>
 
       <div class="film-details__bottom-container"></div>
@@ -97,16 +91,17 @@ export default class FilmPopup extends AbstractView {
     this._film = film;
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
-    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
-    this._watchedClickHandler = this._watchedClickHandler.bind(this);
-    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmPopupTemplate(this._film);
   }
 
-  get commentContainer() {
+  get topContainer() {
+    return this.getElement().querySelector('.film-details__top-container');
+  }
+
+  get bottomContainer() {
     return this.getElement().querySelector('.film-details__bottom-container');
   }
 
@@ -115,38 +110,8 @@ export default class FilmPopup extends AbstractView {
     this._callback.closeClick();
   }
 
-  _watchlistClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchlistClick();
-  }
-
-  _watchedClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchedClick();
-  }
-
-  _favoriteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoriteClick();
-  }
-
   setCloseClickHandler(callback) {
     this._callback.closeClick = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeClickHandler);
-  }
-
-  setWatchlistClickHandler(callback) {
-    this._callback.watchlistClick = callback;
-    this.getElement().querySelector('.film-details__control-button--watchlist').addEventListener('click', this._watchlistClickHandler);
-  }
-
-  setWatchedClickHandler(callback) {
-    this._callback.watchedClick = callback;
-    this.getElement().querySelector('.film-details__control-button--watched').addEventListener('click', this._watchedClickHandler);
-  }
-
-  setFavoriteClickHandler(callback) {
-    this._callback.favoriteClick = callback;
-    this.getElement().querySelector('.film-details__control-button--favorite').addEventListener('click', this._favoriteClickHandler);
   }
 }

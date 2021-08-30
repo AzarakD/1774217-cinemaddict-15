@@ -66,7 +66,6 @@ export default class PopupComment extends SmartView {
     this._newCommentSubmitHandler = this._newCommentSubmitHandler.bind(this);
 
     this._setInnerHandlers();
-    this._setNewCommentSubmitHandler();
   }
 
   getTemplate() {
