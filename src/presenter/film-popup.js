@@ -16,7 +16,7 @@ export default class FilmPopup {
     this._film = film;
 
     this._filmPopupComponent = new FilmPopupView(this._film);
-    this._popupCommentComponent = new PopupCommentView(this._film);
+    this._popupCommentComponent = new PopupCommentView(this._film, this._changeData);
 
     this._setFilmPopupHandlers();
     this._renderPopup();

@@ -56,9 +56,10 @@ const createPopupCommentTemplate = ({comments, newCommentEmotion, newCommentMess
 );
 
 export default class PopupComment extends SmartView {
-  constructor(film) {
+  constructor(film, updateCard) {
     super();
     this._data = PopupComment.parseFilmToData(film);
+    this._updateCard = updateCard;
 
     this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
     this._textInputHandler = this._textInputHandler.bind(this);
@@ -111,6 +112,7 @@ export default class PopupComment extends SmartView {
         this._data.comments.push(this._newComment);
         this._data = PopupComment.parseDataToFilm(this._data);
         this.updateElement();
+        this._updateCard(this._data);
       }
     }
   }
