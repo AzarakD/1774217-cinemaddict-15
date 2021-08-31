@@ -1,4 +1,6 @@
 ﻿import FilmPopupView from '../view/film-popup.js';
+import PopupCommentView from '../view/popup-comment.js';
+import PopupControlsView from '../view/film-popup-controls.js';
 import { render, remove, RenderPosition } from '../utils.js';
 
 export default class FilmPopup {
@@ -15,8 +17,10 @@ export default class FilmPopup {
     this._film = film;
 
     this._filmPopupComponent = new FilmPopupView(this._film);
+    this._popupCommentComponent = new PopupCommentView(this._film, this._changeData);
+    this._popupControlsComponent = new PopupControlsView(this._film, this._changeData);
 
-    this._setFilmPopupHandlers();
+    this._setFilmPopupHandler();
     this._renderPopup();
   }
 
@@ -26,7 +30,11 @@ export default class FilmPopup {
 
   _renderPopup() {
     this._filmPopupContainer.classList.add('hide-overflow');
+
     render(this._filmPopupContainer, this._filmPopupComponent, RenderPosition.BEFOREEND);
+    render(this._filmPopupComponent.bottomContainer, this._popupCommentComponent, RenderPosition.BEFOREEND);
+    render(this._filmPopupComponent.topContainer, this._popupControlsComponent, RenderPosition.BEFOREEND);
+
     document.addEventListener('keydown', this._onEscKeyDown);
   }
 
@@ -43,46 +51,7 @@ export default class FilmPopup {
     }
   }
 
-  _handleWatchlistClick() {
-    this._film = {
-      ...this._film, userDetails: {...this._film.userDetails, isInWatchlist: !this._film.userDetails.isInWatchlist},
-    };
-    this._changeData(this._film);
-  }
-
-  _handleWatchedClick() {
-    this._film = {
-      ...this._film, userDetails: {...this._film.userDetails, isWatched: !this._film.userDetails.isWatched},
-    };
-    this._changeData(this._film);
-  }
-
-  _handleFavoriteClick() {
-    this._film = {
-      ...this._film, userDetails: {...this._film.userDetails, isFavorite: !this._film.userDetails.isFavorite},
-    };
-    this._changeData(this._film);
-  }
-
-  _setFilmPopupHandlers() {
+  _setFilmPopupHandler() {
     this._filmPopupComponent.setCloseClickHandler(this._closePopup);
-
-    this._filmPopupComponent.setWatchlistClickHandler(() => {
-      this._handleWatchlistClick();
-      this._filmPopupComponent.getElement().querySelector('.film-details__control-button--watchlist')
-        .classList.toggle('film-details__control-button--active');
-    });
-
-    this._filmPopupComponent.setWatchedClickHandler(() => {
-      this._handleWatchedClick();
-      this._filmPopupComponent.getElement().querySelector('.film-details__control-button--watched')
-        .classList.toggle('film-details__control-button--active');
-    });
-
-    this._filmPopupComponent.setFavoriteClickHandler(() => {
-      this._handleFavoriteClick();
-      this._filmPopupComponent.getElement().querySelector('.film-details__control-button--favorite')
-        .classList.toggle('film-details__control-button--active');
-    });
   }
 }

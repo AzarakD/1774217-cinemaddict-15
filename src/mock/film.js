@@ -1,10 +1,11 @@
-﻿import dayjs from 'dayjs';
-import { nanoid } from 'nanoid';
+﻿import { nanoid } from 'nanoid';
 import {
   getRandomInteger,
   getRandomFloat,
   getRandomElement,
-  getRandomUniqueSequenceFrom
+  getRandomUniqueSequenceFrom,
+  generateReleaseDate,
+  generateDate
 } from '../utils';
 
 import {
@@ -38,22 +39,6 @@ const generatePeople = () => {
   }
 
   return people;
-};
-
-const generateReleaseDate = () => {
-  const maxDaysGap = 10000;
-  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
-
-  return dayjs('1950-01-01').add(daysGap, 'day').format('DD MMMM YYYY');
-};
-
-const generateDate = () => {
-  const maxDaysGap = 1000;
-  const maxMinuteGap = 720;
-  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
-  const minuteGap = getRandomInteger(-maxMinuteGap, maxMinuteGap);
-
-  return dayjs('2015-01-01').add(daysGap, 'day').add(minuteGap, 'minute').format('YYYY/MM/DD hh:mm');
 };
 
 const generateRuntime = () => {

@@ -7,12 +7,7 @@ const createFilmEmptyListTemplate = () => (
 );
 
 export default class FilmEmptyList extends AbstractView {
-  constructor(films) {
-    super();
-    this._films = films;
-  }
-
   getTemplate() {
-    return createFilmEmptyListTemplate(this._films);
+    return createFilmEmptyListTemplate();
   }
 }
