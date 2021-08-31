@@ -30,15 +30,18 @@ export default class PopupControls extends SmartView {
   }
 
   _setInnerHandlers() {
-    this.getElement().querySelector('.film-details__control-button--watchlist').addEventListener('click', this._watchlistClickHandler);
-    this.getElement().querySelector('.film-details__control-button--watched').addEventListener('click', this._watchedClickHandler);
-    this.getElement().querySelector('.film-details__control-button--favorite').addEventListener('click', this._favoriteClickHandler);
+    this._watchlistButton = this.getElement().querySelector('.film-details__control-button--watchlist');
+    this._watchedButton = this.getElement().querySelector('.film-details__control-button--watched');
+    this._favoriteButton = this.getElement().querySelector('.film-details__control-button--favorite');
+
+    this._watchlistButton.addEventListener('click', this._watchlistClickHandler);
+    this._watchedButton.addEventListener('click', this._watchedClickHandler);
+    this._favoriteButton.addEventListener('click', this._favoriteClickHandler);
   }
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this.getElement().querySelector('.film-details__control-button--watchlist')
-      .classList.toggle('film-details__control-button--active');
+    this._watchlistButton.classList.toggle('film-details__control-button--active');
 
     this._data.userDetails.isInWatchlist = !this._data.userDetails.isInWatchlist;
 
@@ -48,8 +51,7 @@ export default class PopupControls extends SmartView {
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this.getElement().querySelector('.film-details__control-button--watched')
-      .classList.toggle('film-details__control-button--active');
+    this._watchedButton.classList.toggle('film-details__control-button--active');
 
     this._data.userDetails.isWatched = !this._data.userDetails.isWatched;
 
@@ -59,8 +61,7 @@ export default class PopupControls extends SmartView {
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
-    this.getElement().querySelector('.film-details__control-button--favorite')
-      .classList.toggle('film-details__control-button--active');
+    this._favoriteButton.classList.toggle('film-details__control-button--active');
 
     this._data.userDetails.isFavorite = !this._data.userDetails.isFavorite;
 

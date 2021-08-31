@@ -3,22 +3,6 @@
 const createFilmPopupTemplate = ({filmInfo}) => {
   const genres = filmInfo.genres.map((element) => `<span class="film-details__genre">${element}</span>`);
 
-  // const userComments = comments.map((element) => (
-  //   `<li class="film-details__comment">
-  //     <span class="film-details__comment-emoji">
-  //       <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
-  //     </span>
-  //     <div>
-  //       <p class="film-details__comment-text">${element.comment}</p>
-  //       <p class="film-details__comment-info">
-  //         <span class="film-details__comment-author">${element.author}</span>
-  //         <span class="film-details__comment-day">${element.date}</span>
-  //         <button class="film-details__comment-delete">Delete</button>
-  //       </p>
-  //     </div>
-  //   </li>`
-  // ));
-
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
       <div class="film-details__top-container">
