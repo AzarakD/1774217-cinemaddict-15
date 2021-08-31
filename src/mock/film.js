@@ -41,16 +41,6 @@ const generatePeople = () => {
   return people;
 };
 
-const generateRuntime = () => {
-  const hour = getRandomInteger(0, 3);
-  const minute = getRandomInteger(0, 59);
-
-  let runtimeStr = hour > 0 ? `${hour}h` : '';
-  runtimeStr += minute > 0 ? ` ${minute}m` : '';
-
-  return runtimeStr;
-};
-
 const generateFilmInfo = () => {
   const sameTitleIndex = getRandomInteger(0, TITLES.length - 1);
 
@@ -63,7 +53,7 @@ const generateFilmInfo = () => {
     writers: generatePeople(),
     actors: generatePeople(),
     releaseDate: generateReleaseDate(),
-    runtime: generateRuntime(),
+    runtime: getRandomInteger(30, 180),
     country: getRandomElement(COUNTRIES),
     genres: getRandomUniqueSequenceFrom(GENRES),
     description: generateDescription(),

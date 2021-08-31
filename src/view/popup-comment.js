@@ -1,5 +1,5 @@
 ﻿import SmartView from './smart.js';
-import { getCurrentDate } from '../utils.js';
+import { getCurrentDate, humanizeDate } from '../utils.js';
 
 const createNewComment = (element) => (
   `<li class="film-details__comment">
@@ -10,7 +10,7 @@ const createNewComment = (element) => (
       <p class="film-details__comment-text">${element.comment}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${element.author}</span>
-        <span class="film-details__comment-day">${element.date}</span>
+        <span class="film-details__comment-day">${humanizeDate(element.date)}</span>
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>

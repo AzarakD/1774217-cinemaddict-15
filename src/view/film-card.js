@@ -1,13 +1,14 @@
 ﻿import AbstractView from './abstract.js';
+import { formatReleaseDate, getHoursAndMinutes } from '../utils.js';
 
 const createFilmCardTemplate = ({filmInfo, comments, userDetails}) => (
   `<article class="film-card">
     <h3 class="film-card__title">${filmInfo.title}</h3>
     <p class="film-card__rating">${filmInfo.rating}</p>
     <p class="film-card__info">
-      <span class="film-card__year">${filmInfo.releaseDate.substr(-4)}</span>
-      <span class="film-card__duration">${filmInfo.runtime}</span>
-      <span class="film-card__genre">${filmInfo.genres.join(', ')}</span>
+      <span class="film-card__year">${formatReleaseDate(filmInfo.releaseDate).substr(-4)}</span>
+      <span class="film-card__duration">${getHoursAndMinutes(filmInfo.runtime)}</span>
+      <span class="film-card__genre">${filmInfo.genres[0]}</span>
     </p>
     <img src="./${filmInfo.poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${filmInfo.description.length < 140 ? filmInfo.description : `${filmInfo.description.slice(0, 140)}...`}</p>

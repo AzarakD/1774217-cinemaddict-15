@@ -1,6 +1,6 @@
 ﻿import FilmPopupView from '../view/film-popup.js';
 import PopupCommentView from '../view/popup-comment.js';
-import PopupControlsView from '../view/film-popup-controls.js';
+import PopupControlsView from '../view/popup-controls.js';
 import { render, remove, RenderPosition } from '../utils.js';
 
 export default class FilmPopup {
