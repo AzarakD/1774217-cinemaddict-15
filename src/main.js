@@ -12,7 +12,8 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const footerStatistic = document.querySelector('.footer__statistics');
 
+render(siteHeaderElement, new UserProfileView(films), RenderPosition.BEFOREEND);
+
 new FilmBoardPresenter(siteMainElement).init(films);
 
-render(siteHeaderElement, new UserProfileView(films), RenderPosition.BEFOREEND);
 render(footerStatistic, new FilmCounterView(films), RenderPosition.BEFOREEND);

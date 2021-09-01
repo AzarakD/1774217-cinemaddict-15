@@ -1,4 +1,5 @@
 ﻿import AbstractView from './abstract.js';
+import { formatReleaseDate, getHoursAndMinutes } from '../utils.js';
 
 const createFilmPopupTemplate = ({filmInfo}) => {
   const genres = filmInfo.genres.map((element) => `<span class="film-details__genre">${element}</span>`);
@@ -43,11 +44,11 @@ const createFilmPopupTemplate = ({filmInfo}) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${filmInfo.releaseDate}</td>
+                <td class="film-details__cell">${formatReleaseDate(filmInfo.releaseDate)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${filmInfo.runtime}</td>
+                <td class="film-details__cell">${getHoursAndMinutes(filmInfo.runtime)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>

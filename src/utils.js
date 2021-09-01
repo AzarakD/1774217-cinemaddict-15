@@ -1,5 +1,9 @@
 ﻿import Abstract from './view/abstract.js';
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
 export const SortType = {
   DEFAULT: 'default',
@@ -112,7 +116,7 @@ export const generateReleaseDate = () => {
   const maxDaysGap = 10000;
   const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
 
-  return dayjs('1950-01-01').add(daysGap, 'day').format('DD MMMM YYYY');
+  return dayjs('1950-01-01T00:00:00.000Z').add(daysGap, 'day');
 };
 
 export const generateDate = () => {
@@ -124,4 +128,10 @@ export const generateDate = () => {
   return dayjs('2015-01-01').add(daysGap, 'day').add(minuteGap, 'minute').format('YYYY/MM/DD hh:mm');
 };
 
-export const getCurrentDate = () => dayjs().format('YYYY/MM/DD hh:mm');
+export const getCurrentDate = () => dayjs();
+
+export const getHoursAndMinutes = (time) => time < 60 ? `${time}m` : dayjs.duration(time, 'm').format('H[h] mm[m]');
+
+export const formatReleaseDate = (date) => dayjs(date).format('DD MMMM YYYY');
+
+export const humanizeDate = (date) => dayjs(date).fromNow();

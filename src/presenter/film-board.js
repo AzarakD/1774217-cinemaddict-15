@@ -34,6 +34,8 @@ export default class FilmBoard {
     this._showMoreBtnComponent = new ShowMoreButtonView();
 
     this._filmListContainer = this._filmListComponent.getFilmContainer();
+    this._filmPopupContainer = document.querySelector('body');
+    this._profileName = document.querySelector('.profile__rating').textContent;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
@@ -126,7 +128,7 @@ export default class FilmBoard {
     if (this._filmPopupPresenter) {
       this._filmPopupPresenter.destroy();
     }
-    this._filmPopupPresenter = new FilmPopupPresenter(this._handleFilmChange);
+    this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleFilmChange, this._profileName);
     this._filmPopupPresenter.init(presenterMap.get(film.id).film);
   }
 

@@ -1,13 +1,13 @@
 ﻿import FilmPopupView from '../view/film-popup.js';
 import PopupCommentView from '../view/popup-comment.js';
-import PopupControlsView from '../view/film-popup-controls.js';
+import PopupControlsView from '../view/popup-controls.js';
 import { render, remove, RenderPosition } from '../utils.js';
 
 export default class FilmPopup {
-  constructor(changeData) {
+  constructor(container, changeData, profieName) {
+    this._filmPopupContainer = container;
     this._changeData = changeData;
-
-    this._filmPopupContainer = document.querySelector('body');
+    this._profileName = profieName;
 
     this._closePopup = this._closePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
@@ -17,7 +17,7 @@ export default class FilmPopup {
     this._film = film;
 
     this._filmPopupComponent = new FilmPopupView(this._film);
-    this._popupCommentComponent = new PopupCommentView(this._film, this._changeData);
+    this._popupCommentComponent = new PopupCommentView(this._film, this._changeData, this._profileName);
     this._popupControlsComponent = new PopupControlsView(this._film, this._changeData);
 
     this._setFilmPopupHandler();
