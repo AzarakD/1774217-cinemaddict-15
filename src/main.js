@@ -18,6 +18,6 @@ const footerStatistic = document.querySelector('.footer__statistics');
 
 render(siteHeaderElement, new UserProfileView(films), RenderPosition.BEFOREEND);
 
-new FilmBoardPresenter(siteMainElement, filmsModel).init(films);
+new FilmBoardPresenter(siteMainElement, filmsModel).init();
 
 render(footerStatistic, new FilmCounterView(films), RenderPosition.BEFOREEND);
