@@ -60,6 +60,10 @@ export default class FilmBoard {
       return film && film.init(updatedFilm);
     });
 
+    if (this._filmPopupContainer.classList.contains('hide-overflow')) {
+      this._filmPopupPresenter.updatePopup(updatedFilm);
+    }
+
     remove(this._siteMenuComponent);
     this._renderSiteMenu();
   }

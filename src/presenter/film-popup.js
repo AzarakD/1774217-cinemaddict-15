@@ -28,6 +28,11 @@ export default class FilmPopup {
     this._closePopup();
   }
 
+  updatePopup(film) {
+    this._popupControlsComponent.updateData(film);
+    this._popupCommentComponent.updateData(film);
+  }
+
   _renderPopup() {
     this._filmPopupContainer.classList.add('hide-overflow');
 

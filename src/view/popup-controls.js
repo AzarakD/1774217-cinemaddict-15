@@ -41,7 +41,6 @@ export default class PopupControls extends SmartView {
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._watchlistButton.classList.toggle('film-details__control-button--active');
 
     this._data.userDetails.isInWatchlist = !this._data.userDetails.isInWatchlist;
 
@@ -51,7 +50,6 @@ export default class PopupControls extends SmartView {
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._watchedButton.classList.toggle('film-details__control-button--active');
 
     this._data.userDetails.isWatched = !this._data.userDetails.isWatched;
 
@@ -61,7 +59,6 @@ export default class PopupControls extends SmartView {
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
-    this._favoriteButton.classList.toggle('film-details__control-button--active');
 
     this._data.userDetails.isFavorite = !this._data.userDetails.isFavorite;
 
