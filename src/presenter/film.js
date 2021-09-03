@@ -1,5 +1,5 @@
 ﻿import FilmCardView from '../view/film-card.js';
-import { render, replace, remove, RenderPosition } from '../utils.js';
+import { render, replace, remove, RenderPosition, UserAction, UpdateType } from '../utils.js';
 
 export default class Film {
   constructor(container, changeData, createPopup) {
@@ -47,21 +47,24 @@ export default class Film {
   }
 
   _handleWatchlistClick() {
-    this._changeData({
-      ...this._film, userDetails: {...this._film.userDetails, isInWatchlist: !this._film.userDetails.isInWatchlist},
-    });
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      {...this._film, userDetails: {...this._film.userDetails, isInWatchlist: !this._film.userDetails.isInWatchlist}});
   }
 
   _handleWatchedClick() {
-    this._changeData({
-      ...this._film, userDetails: {...this._film.userDetails, isWatched: !this._film.userDetails.isWatched},
-    });
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      {...this._film, userDetails: {...this._film.userDetails, isWatched: !this._film.userDetails.isWatched}});
   }
 
   _handleFavoriteClick() {
-    this._changeData({
-      ...this._film, userDetails: {...this._film.userDetails, isFavorite: !this._film.userDetails.isFavorite},
-    });
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      {...this._film, userDetails: {...this._film.userDetails, isFavorite: !this._film.userDetails.isFavorite}});
   }
 
   _setFilmHandlers() {

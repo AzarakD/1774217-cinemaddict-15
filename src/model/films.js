@@ -31,26 +31,27 @@ export default class Films extends AbstractObserver {
   }
 
   // Эксперимент
-  addComment(updateType, updatedFilm, comment) {
+  addComment(updateType, updatedFilm, update) {
     const index = this._films.findIndex((film) => film.id === updatedFilm.id);
 
     if (index === -1) {
       throw new Error('Can\'t add comment to unexisting film');
     }
 
-    this._films[index].comments.push(comment);
-    this._notify(updateType, updatedFilm);
+    this._films[index].comments = [...this._films[index].comments, update];
+
+    this._notify(updateType, update);
   }
 
   // Эксперимент
-  deleteComment(updateType, updatedFilm, comment) {
+  deleteComment(updateType, updatedFilm, update) {
     const index = this._films.findIndex((task) => task.id === updatedFilm.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete comment of unexisting film');
     }
 
-    this._films[index].comments.splice(this._films[index].comments.indexOf(comment), 1);
+    this._films[index].comments.splice(this._films[index].comments.indexOf(update), 1);
 
     this._notify(updateType);
   }
