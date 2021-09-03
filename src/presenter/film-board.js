@@ -60,8 +60,7 @@ export default class FilmBoard {
 
   init() {
     // this._renderSiteMenu();
-    this._renderSort();
-    this._renderFilmListContainer();
+    // this._renderSort();
     this._renderFilmBoard();
   }
 
@@ -149,14 +148,18 @@ export default class FilmBoard {
     const films = this._getFilms();
     const filmCount = films.length;
 
+    this._renderSiteMenu();
+
     if (filmCount === 0) {
       this._renderEmptyFilmList();
       return;
     }
 
-    // this._renderSort();
     // this._renderFilmList();
-    this._renderSiteMenu();
+    this._renderSort();
+    this._renderFilmListContainer();
+    this._renderFilmListContainer();
+    this._renderFilmListContainer();
     this._renderFilms(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
 
     if (filmCount > this._renderedFilmCount) {
@@ -174,8 +177,8 @@ export default class FilmBoard {
     if (this._filmEmptyListComponent) {
       remove(this._filmEmptyListComponent);
     }
-    // remove(this._sortComponent);
     remove(this._siteMenuComponent);
+    remove(this._sortComponent);
     remove(this._showMoreBtnComponent);
     remove(this._extraTopRatedComponent);
     remove(this._extraTopCommentedComponent);
@@ -210,12 +213,11 @@ export default class FilmBoard {
     // this._renderFilmList();
     this._clearFilmBoard({resetRenderedFilmCount:true});
     this._renderFilmBoard();
-    this._renderExtra();
   }
 
   _renderSiteMenu() {
     this._siteMenuComponent = new SiteMenuView(this._getFilms()); // this._films
-    render(this._filmBoardContainer, this._siteMenuComponent, RenderPosition.AFTERBEGIN);
+    render(this._filmBoardContainer, this._siteMenuComponent, RenderPosition.BEFOREEND);
   }
 
   _renderSort() {
@@ -223,7 +225,7 @@ export default class FilmBoard {
       this._sortComponent = null;
     }
 
-    this._sortComponent = new SortView();
+    this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortClickHandler(this._handleSortClick);
 
     render(this._filmBoardContainer, this._sortComponent, RenderPosition.BEFOREEND);
