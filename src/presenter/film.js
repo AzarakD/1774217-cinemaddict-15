@@ -1,5 +1,6 @@
 ﻿import FilmCardView from '../view/film-card.js';
-import { render, replace, remove, RenderPosition, UserAction, UpdateType } from '../utils.js';
+import { render, replace, remove } from '../utils.js';
+import { RenderPosition, UserAction, UpdateType } from '../consts.js';
 
 export default class Film {
   constructor(container, changeData, createPopup) {

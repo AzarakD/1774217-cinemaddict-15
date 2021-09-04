@@ -3,7 +3,8 @@ import UserProfileView from './view/user-profile.js';
 import FilmCounterView from './view/film-counter.js';
 import FilmBoardPresenter from './presenter/film-board.js';
 import { generateFilmCard } from './mock/film.js';
-import { render, RenderPosition } from './utils.js';
+import { render } from './utils.js';
+import { RenderPosition } from './consts.js';
 
 const FILM_COUNT = 20;
 
