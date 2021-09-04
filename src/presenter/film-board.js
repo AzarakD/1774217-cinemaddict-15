@@ -13,9 +13,10 @@ import { RenderPosition, SortType, UserAction, UpdateType } from '../consts.js';
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmBoard {
-  constructor(container, filmsModel) {
+  constructor(container, filmsModel, filterModel) {
     this._filmBoardContainer = container;
     this._filmsModel = filmsModel;
+    this._filterModel = filterModel;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
 
@@ -45,6 +46,7 @@ export default class FilmBoard {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -66,7 +68,11 @@ export default class FilmBoard {
 
   _handleModelEvent(updateType, data) {
     if (updateType === UpdateType.PATCH) {
-      this._filmPresenterMap.get(data.id).init(data);
+      // this._filmPresenterMap.get(data.id).init(data);
+      this._presenterMaps.forEach((presenterMap) => {
+        const film = presenterMap.get(data.id);
+        return film && film.init(data);
+      });
     } else if (updateType === UpdateType.MINOR) {
       this._clearFilmBoard();
       this._renderFilmBoard();
@@ -133,15 +139,6 @@ export default class FilmBoard {
     }
   }
 
-  // _sortFilms(sortType) {
-  //   if (sortType === SortType.DEFAULT) {
-  //     this._films = this._sourcedFilms.slice();
-  //     return;
-  //   }
-  //   this._films.sort(SortStrategy[sortType]);
-  //   this._currentSortType = sortType;
-  // }
-
   _handleSortClick(sortType) {
     if (this._currentSortType === sortType) {
       return;
@@ -195,27 +192,6 @@ export default class FilmBoard {
   _clearPresenter(presenterMap) {
     presenterMap.forEach((element) => element.destroy());
     presenterMap.clear();
-  }
-
-  _clearFilmList() {
-    this._renderedFilmCount = FILM_COUNT_PER_STEP;
-
-    this._presenterMaps.forEach((presenterMap) => this._clearPresenter(presenterMap));
-
-    remove(this._showMoreBtnComponent);
-    remove(this._extraTopRatedComponent);
-    remove(this._extraTopCommentedComponent);
-  }
-
-  _renderFilmList() {
-    const filmCount = this._getFilms().length;
-    const films = this._getFilms().slice(0, Math.min(filmCount, FILM_COUNT_PER_STEP));
-
-    this._renderFilms(films);
-
-    if (filmCount > FILM_COUNT_PER_STEP) {
-      this._renderShowMoreBtn();
-    }
   }
 
   _renderShowMoreBtn() {

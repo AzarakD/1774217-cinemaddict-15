@@ -1,10 +1,17 @@
-﻿import { SortType } from './consts.js';
+﻿import { SortType, FilterType } from './consts.js';
 import Abstract from './view/abstract.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
+
+export const FilterStrategy = {
+  [FilterType.ALL]: (films) => films,
+  [FilterType.WATCHLIST]: (films) => films.filter((film) => film.userDetails.isInWatchlist),
+  [FilterType.HISTORY]: (films) => films.filter((film) => film.userDetails.isWatched),
+  [FilterType.FAVORITES]: (films) => films.filter((film) => film.userDetails.isFavorite),
+};
 
 export const SortStrategy = {
   [SortType.BY_RATING]: (a, b) => b.filmInfo.rating - a.filmInfo.rating,

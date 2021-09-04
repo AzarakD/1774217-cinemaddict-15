@@ -22,3 +22,10 @@ export const RenderPosition = {
   AFTEREND: 'afterend',
   BEFOREEND: 'beforeend',
 };
+
+export const FilterType = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites',
+};
