@@ -1,6 +1,5 @@
 ﻿import FilmPresenter from './film.js';
 import FilmPopupPresenter from './film-popup.js';
-import SiteMenuView from '../view/site-menu.js';
 import FilmBoardView from '../view/film-board.js';
 import FilmListView from '../view/film-list.js';
 import FilmEmptyListView from '../view/film-empty-list.js';
@@ -59,11 +58,6 @@ export default class FilmBoard {
     return this._filmsModel.getFilms().slice().sort(SortStrategy[this._currentSortType]);
   }
 
-  _updateSiteMenu() {
-    remove(this._siteMenuComponent);
-    this._renderSiteMenu();
-  }
-
   _handleViewAction(actionType, updateType, update) {
     if (actionType === UserAction.UPDATE_FILM) {
       this._filmsModel.updateFilm(updateType, update);
@@ -73,7 +67,6 @@ export default class FilmBoard {
   _handleModelEvent(updateType, data) {
     if (updateType === UpdateType.PATCH) {
       this._filmPresenterMap.get(data.id).init(data);
-      this._updateSiteMenu();
     } else if (updateType === UpdateType.MINOR) {
       this._clearFilmBoard();
       this._renderFilmBoard();
@@ -84,7 +77,6 @@ export default class FilmBoard {
   }
 
   _handleShowMoreBtnClick() {
-
     const filmCount = this._getFilms().length;
     const newRenderedfilmCount = Math.min(filmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP);
     const films = this._getFilms().slice(this._renderedFilmCount, newRenderedfilmCount);
@@ -101,16 +93,12 @@ export default class FilmBoard {
     const films = this._getFilms();
     const filmCount = films.length;
 
-    this._renderSiteMenu();
-
     if (filmCount === 0) {
       this._renderEmptyFilmList();
       return;
     }
 
     this._renderSort();
-    this._renderFilmListContainer();
-    this._renderFilmListContainer();
     this._renderFilmListContainer();
     this._renderFilms(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
 
@@ -129,7 +117,6 @@ export default class FilmBoard {
     if (this._filmEmptyListComponent) {
       remove(this._filmEmptyListComponent);
     }
-    remove(this._siteMenuComponent);
     remove(this._sortComponent);
     remove(this._showMoreBtnComponent);
     remove(this._extraTopRatedComponent);
@@ -162,11 +149,6 @@ export default class FilmBoard {
     this._currentSortType = sortType;
     this._clearFilmBoard({resetRenderedFilmCount:true});
     this._renderFilmBoard();
-  }
-
-  _renderSiteMenu() {
-    this._siteMenuComponent = new SiteMenuView(this._getFilms()); // this._films
-    render(this._filmBoardContainer, this._siteMenuComponent, RenderPosition.BEFOREEND);
   }
 
   _renderSort() {
