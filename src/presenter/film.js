@@ -50,21 +50,21 @@ export default class Film {
   _handleWatchlistClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       {...this._film, userDetails: {...this._film.userDetails, isInWatchlist: !this._film.userDetails.isInWatchlist}});
   }
 
   _handleWatchedClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       {...this._film, userDetails: {...this._film.userDetails, isWatched: !this._film.userDetails.isWatched}});
   }
 
   _handleFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       {...this._film, userDetails: {...this._film.userDetails, isFavorite: !this._film.userDetails.isFavorite}});
   }
 

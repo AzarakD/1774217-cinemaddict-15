@@ -20,6 +20,7 @@ export const SortType = {
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   AFTEREND: 'afterend',
+  BEFOREBEGIN: 'beforebegin',
   BEFOREEND: 'beforeend',
 };
 

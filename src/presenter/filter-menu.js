@@ -65,10 +65,9 @@ export default class FilterMenu {
   }
 
   _handleFilterTypeChange(filterType) {
-    // Не будет обновлять при нажатии на уже выбранный фильтр
-    // if (this._filterModel.getFilter() === filterType) {
-    //   return;
-    // }
+    if (this._filterModel.getFilter() === filterType) {
+      return;
+    }
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 }
