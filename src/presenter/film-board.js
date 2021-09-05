@@ -7,7 +7,7 @@ import SortView from '../view/sort.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import ExtraTopRatedView from '../view/extra-top-rated.js';
 import ExtraTopCommentedView from '../view/extra-top-commented.js';
-import { render, remove, SortStrategy } from '../utils.js';
+import { render, remove, SortStrategy, FilterStrategy } from '../utils.js';
 import { RenderPosition, SortType, UserAction, UpdateType } from '../consts.js';
 
 const FILM_COUNT_PER_STEP = 5;
@@ -54,10 +54,16 @@ export default class FilmBoard {
   }
 
   _getFilms() {
+    const films = this._filmsModel.getFilms();
+    const filterType = this._filterModel.getFilter();
+    const filteredFilms = FilterStrategy[filterType](films);
+
+    console.log(filteredFilms)
+
     if (this._currentSortType === SortType.DEFAULT) {
-      return this._filmsModel.getFilms();
+      return filteredFilms;
     }
-    return this._filmsModel.getFilms().slice().sort(SortStrategy[this._currentSortType]);
+    return filteredFilms.sort(SortStrategy[this._currentSortType]);
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -96,8 +102,9 @@ export default class FilmBoard {
   }
 
   _renderFilmBoard() {
-    const films = this._getFilms();
-    const filmCount = films.length;
+    console.log('render board')
+    this._films = this._getFilms(); // const films
+    const filmCount = this._films.length;
 
     if (filmCount === 0) {
       this._renderEmptyFilmList();
@@ -106,7 +113,7 @@ export default class FilmBoard {
 
     this._renderSort();
     this._renderFilmListContainer();
-    this._renderFilms(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
+    this._renderFilms(this._films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
 
     if (filmCount > this._renderedFilmCount) {
       this._renderShowMoreBtn();
@@ -116,7 +123,8 @@ export default class FilmBoard {
   }
 
   _clearFilmBoard({resetRenderedFilmCount = false, resetSortType = false} = {}) {
-    const filmCount = this._getFilms().length;
+    console.log('clear board')
+    const filmCount = this._films.length; // this._getFilms().length
 
     this._presenterMaps.forEach((presenterMap) => this._clearPresenter(presenterMap));
 
@@ -206,7 +214,8 @@ export default class FilmBoard {
   }
 
   _renderExtra() {
-    const films = this._getFilms().slice();
+    console.log('extra')
+    const films = this._films; // this._getFilms().slice();
 
     this._extraTopRatedComponent = new ExtraTopRatedView();
     this._extraTopCommentedComponent = new ExtraTopCommentedView();

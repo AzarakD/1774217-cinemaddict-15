@@ -25,6 +25,9 @@ export default class SiteMenu extends AbstractView {
   }
 
   _filterTypeChangeHandler(evt) {
+    if (evt.target.tagName !== 'A') {
+      return;
+    }
     evt.preventDefault();
     this._callback.filterTypeChange(evt.target.dataset.filterType);
   }
