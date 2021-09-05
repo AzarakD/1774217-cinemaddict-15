@@ -63,11 +63,17 @@ export default class FilmBoard {
     if (this._currentSortType === SortType.DEFAULT) {
       return filteredFilms;
     }
-    return filteredFilms.sort(SortStrategy[this._currentSortType]);
+    return filteredFilms.slice().sort(SortStrategy[this._currentSortType]);
   }
 
-  _handleViewAction(actionType, updateType, update) {
+  _handleViewAction(actionType, updateType, update, comment) {
     if (actionType === UserAction.UPDATE_FILM) {
+      this._filmsModel.updateFilm(updateType, update);
+    } else if (actionType === UserAction.ADD_COMMENT) {
+      this._filmsModel.addComment(updateType, update, comment);
+      this._filmsModel.updateFilm(updateType, update);
+    } else if (actionType === UserAction.DELETE_COMMENT) {
+      this._filmsModel.deleteComment(updateType, update, comment);
       this._filmsModel.updateFilm(updateType, update);
     }
   }
@@ -81,6 +87,9 @@ export default class FilmBoard {
     } else if (updateType === UpdateType.MINOR) {
       this._clearFilmBoard({resetRenderedFilmCount: true});
       this._renderFilmBoard();
+      if (this._filmPopupPresenter) {
+        this._filmPopupPresenter.updatePopup(data);
+      }
     } else if (updateType === UpdateType.MAJOR) {
       this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
       this._renderFilmBoard();

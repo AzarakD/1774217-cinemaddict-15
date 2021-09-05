@@ -30,7 +30,6 @@ export default class Films extends AbstractObserver {
     this._notify(updateType, update);
   }
 
-  // Эксперимент
   addComment(updateType, updatedFilm, update) {
     const index = this._films.findIndex((film) => film.id === updatedFilm.id);
 
@@ -43,16 +42,15 @@ export default class Films extends AbstractObserver {
     this._notify(updateType, update);
   }
 
-  // Эксперимент
   deleteComment(updateType, updatedFilm, update) {
-    const index = this._films.findIndex((task) => task.id === updatedFilm.id);
+    const filmIndex = this._films.findIndex((film) => film.id === updatedFilm.id);
 
-    if (index === -1) {
+    if (filmIndex === -1) {
       throw new Error('Can\'t delete comment of unexisting film');
     }
+    const commentIndex = this._films[filmIndex].comments.findIndex((comment) => comment.id === update);
+    this._films[filmIndex].comments.splice(commentIndex, 1);
 
-    this._films[index].comments.splice(this._films[index].comments.indexOf(update), 1);
-
-    this._notify(updateType);
+    this._notify(updateType, updatedFilm);
   }
 }

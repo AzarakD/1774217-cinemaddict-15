@@ -1,5 +1,7 @@
 ﻿import SmartView from './smart.js';
 import { getCurrentDate, humanizeDate } from '../utils.js';
+import { UserAction, UpdateType } from '../consts.js';
+import { nanoid } from 'nanoid';
 
 const createNewComment = (element) => (
   `<li class="film-details__comment">
@@ -11,7 +13,7 @@ const createNewComment = (element) => (
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${element.author}</span>
         <span class="film-details__comment-day">${humanizeDate(element.date)}</span>
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" data-id="${element.id}">Delete</button>
       </p>
     </div>
   </li>`
@@ -65,6 +67,7 @@ export default class PopupComment extends SmartView {
     this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
     this._textInputHandler = this._textInputHandler.bind(this);
     this._newCommentSubmitHandler = this._newCommentSubmitHandler.bind(this);
+    this._commentDeleteHandler = this._commentDeleteHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -84,6 +87,22 @@ export default class PopupComment extends SmartView {
 
     this.getElement().querySelector('.film-details__comment-input')
       .addEventListener('input', this._textInputHandler);
+
+    this.getElement().querySelectorAll('.film-details__comment-delete').
+      forEach((button) => button.addEventListener('click', this._commentDeleteHandler));
+  }
+
+  _commentDeleteHandler(evt) {
+    evt.preventDefault();
+    this._data = PopupComment.parseDataToFilm(this._data);
+    this._updateCard(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      this._data,
+      evt.target.dataset.id,
+    );
+
+    this.updateElement();
   }
 
   _emotionChangeHandler(evt) {
@@ -108,11 +127,17 @@ export default class PopupComment extends SmartView {
           comment: this._data.newCommentMessage,
           author: this._profileName,
           date: getCurrentDate(),
+          id: nanoid(),
         };
         this._data.comments.push(this._newComment);
         this._data = PopupComment.parseDataToFilm(this._data);
         this.updateElement();
-        this._updateCard(this._data);
+        this._updateCard(
+          UserAction.ADD_COMMENT,
+          UpdateType.PATCH,
+          this._data,
+          this._newComment,
+        );
       }
     }
   }

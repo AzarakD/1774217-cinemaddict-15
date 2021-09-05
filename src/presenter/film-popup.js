@@ -29,9 +29,9 @@ export default class FilmPopup {
     this._closePopup();
   }
 
-  updatePopup(film) {
-    this._popupControlsComponent.updateData(film);
-    this._popupCommentComponent.updateData(film);
+  updatePopup(data) {
+    this._popupControlsComponent.updateData(data);
+    this._popupCommentComponent.updateData(data);
   }
 
   _renderPopup() {
