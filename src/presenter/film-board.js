@@ -74,30 +74,16 @@ export default class FilmBoard {
 
   _handleModelEvent(updateType, data) {
     if (updateType === UpdateType.PATCH) {
-      // this._filmPresenterMap.get(data.id).init(data);
       this._presenterMaps.forEach((presenterMap) => {
         const film = presenterMap.get(data.id);
         return film && film.init(data);
       });
     } else if (updateType === UpdateType.MINOR) {
-      this._clearFilmBoard();
+      this._clearFilmBoard({resetRenderedFilmCount: true});
       this._renderFilmBoard();
     } else if (updateType === UpdateType.MAJOR) {
       this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
       this._renderFilmBoard();
-    }
-  }
-
-  _handleShowMoreBtnClick() {
-    const filmCount = this._getFilms().length;
-    const newRenderedfilmCount = Math.min(filmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP);
-    const films = this._getFilms().slice(this._renderedFilmCount, newRenderedfilmCount);
-
-    this._renderFilms(films);
-    this._renderedFilmCount = newRenderedfilmCount;
-
-    if (this._renderedFilmCount >= filmCount) {
-      remove(this._showMoreBtnComponent);
     }
   }
 
@@ -129,11 +115,15 @@ export default class FilmBoard {
     if (this._filmEmptyListComponent) {
       remove(this._filmEmptyListComponent);
     }
+
     remove(this._sortComponent);
     remove(this._showMoreBtnComponent);
-    remove(this._extraTopRatedComponent);
-    remove(this._extraTopCommentedComponent);
     remove(this._filmListComponent);
+
+    if (this._extraTopRatedComponent) {
+      remove(this._extraTopRatedComponent);
+      remove(this._extraTopCommentedComponent);
+    }
 
     if (resetRenderedFilmCount) {
       this._renderedFilmCount = FILM_COUNT_PER_STEP;
@@ -144,6 +134,11 @@ export default class FilmBoard {
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
     }
+  }
+
+  _clearPresenter(presenterMap) {
+    presenterMap.forEach((element) => element.destroy());
+    presenterMap.clear();
   }
 
   _handleSortClick(sortType) {
@@ -196,9 +191,17 @@ export default class FilmBoard {
     films.forEach((film) => this._renderFilm(this._filmListContainer, film, this._filmPresenterMap));
   }
 
-  _clearPresenter(presenterMap) {
-    presenterMap.forEach((element) => element.destroy());
-    presenterMap.clear();
+  _handleShowMoreBtnClick() {
+    const filmCount = this._getFilms().length;
+    const newRenderedfilmCount = Math.min(filmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP);
+    const films = this._getFilms().slice(this._renderedFilmCount, newRenderedfilmCount);
+
+    this._renderFilms(films);
+    this._renderedFilmCount = newRenderedfilmCount;
+
+    if (this._renderedFilmCount >= filmCount) {
+      remove(this._showMoreBtnComponent);
+    }
   }
 
   _renderShowMoreBtn() {
@@ -213,7 +216,7 @@ export default class FilmBoard {
   }
 
   _renderExtra() {
-    const films = this._films;
+    const films = this._films.slice();
 
     this._extraTopRatedComponent = new ExtraTopRatedView();
     this._extraTopCommentedComponent = new ExtraTopCommentedView();

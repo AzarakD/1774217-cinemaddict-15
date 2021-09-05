@@ -40,7 +40,6 @@ export default class FilterMenu {
       {
         type: FilterType.ALL,
         name: 'All movies',
-        // count: FilterStrategy[FilterType.ALL](films).length,
       },
       {
         type: FilterType.WATCHLIST,
