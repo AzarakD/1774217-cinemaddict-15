@@ -1,4 +1,5 @@
-﻿import SmartView from './smart.js';
+﻿import he from 'he';
+import SmartView from './smart.js';
 import { getCurrentDate, humanizeDate } from '../utils.js';
 import { UserAction, UpdateType } from '../consts.js';
 import { nanoid } from 'nanoid';
@@ -9,7 +10,7 @@ const createNewComment = (element) => (
       <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
     </span>
     <div>
-      <p class="film-details__comment-text">${element.comment}</p>
+      <p class="film-details__comment-text">${he.encode(element.comment)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${element.author}</span>
         <span class="film-details__comment-day">${humanizeDate(element.date)}</span>
