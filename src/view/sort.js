@@ -1,28 +1,26 @@
 ﻿import AbstractView from './abstract.js';
-import { SortType } from '../utils.js';
+import { SortType } from '../consts';
 
-const createSortButton = (sortType) => (
-  `<li><a href="#" class="sort__button" data-sort-type="${sortType}">Sort by ${sortType}</a></li>`
+const createSortButton = (sortType, currentSortType) => (
+  `<li><a href="#" class="sort__button ${currentSortType === sortType ? 'sort__button--active' : ''}" data-sort-type="${sortType}">Sort by ${sortType}</a></li>`
 );
 
-const createSortTemplate = () => (
+const createSortTemplate = (currentSortType) => (
   `<ul class="sort">
-    ${Object.values(SortType).slice(0, 3).map((sortType) => createSortButton(sortType)).join(' ')}
+    ${Object.values(SortType).slice(0, 3).map((sortType) => createSortButton(sortType, currentSortType)).join(' ')}
   </ul>`
 );
 
 export default class Sort extends AbstractView{
-  constructor() {
+  constructor(currentSortType) {
     super();
-
-    this._activeButton = this.getElement().querySelectorAll('A')[0];
-    this._activeButton.classList.add('sort__button--active');
+    this._currentSortType = currentSortType;
 
     this._sortClickHandler = this._sortClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createSortTemplate();
+    return createSortTemplate(this._currentSortType);
   }
 
   _sortClickHandler(evt) {
@@ -31,9 +29,6 @@ export default class Sort extends AbstractView{
     }
 
     evt.preventDefault();
-    this._activeButton.classList.remove('sort__button--active');
-    this._activeButton = evt.target;
-    this._activeButton.classList.add('sort__button--active');
     this._callback.click(evt.target.dataset.sortType);
   }
 

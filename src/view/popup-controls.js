@@ -1,4 +1,5 @@
 ﻿import SmartView from './smart.js';
+import { UserAction, UpdateType } from '../consts.js';
 
 const createPopupControlsTemplate = ({userDetails}) => (
   `<section class="film-details__controls">
@@ -41,31 +42,40 @@ export default class PopupControls extends SmartView {
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._watchlistButton.classList.toggle('film-details__control-button--active');
 
     this._data.userDetails.isInWatchlist = !this._data.userDetails.isInWatchlist;
 
     this.updateElement();
-    this._updateCard(this._data);
+    this._updateCard(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      this._data,
+    );
   }
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._watchedButton.classList.toggle('film-details__control-button--active');
 
     this._data.userDetails.isWatched = !this._data.userDetails.isWatched;
 
     this.updateElement();
-    this._updateCard(this._data);
+    this._updateCard(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      this._data,
+    );
   }
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
-    this._favoriteButton.classList.toggle('film-details__control-button--active');
 
     this._data.userDetails.isFavorite = !this._data.userDetails.isFavorite;
 
     this.updateElement();
-    this._updateCard(this._data);
+    this._updateCard(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      this._data,
+    );
   }
 }

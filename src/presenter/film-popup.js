@@ -1,7 +1,8 @@
 ﻿import FilmPopupView from '../view/film-popup.js';
 import PopupCommentView from '../view/popup-comment.js';
 import PopupControlsView from '../view/popup-controls.js';
-import { render, remove, RenderPosition } from '../utils.js';
+import { render, remove } from '../utils.js';
+import { RenderPosition } from '../consts.js';
 
 export default class FilmPopup {
   constructor(container, changeData, profieName) {
@@ -26,6 +27,11 @@ export default class FilmPopup {
 
   destroy() {
     this._closePopup();
+  }
+
+  updatePopup(data) {
+    this._popupControlsComponent.updateData(data);
+    this._popupCommentComponent.updateData(data);
   }
 
   _renderPopup() {
