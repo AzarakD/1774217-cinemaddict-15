@@ -12,7 +12,7 @@ const createPopupControlsTemplate = ({userDetails}) => (
 export default class PopupControls extends SmartView {
   constructor(film, updateCard) {
     super();
-    this._data = {...film};
+    this._data = film;
     this._updateCard = updateCard;
 
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);

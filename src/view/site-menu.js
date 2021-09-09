@@ -1,7 +1,7 @@
 ﻿import AbstractView from './abstract.js';
 
 const createFilterButton = ({type, name, count}, currentFilter) => (
-  `<a href="#${type}" class="main-navigation__item ${type === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type="${type}">${name}${count ? ` <span class="main-navigation__item-count">${count}</span>` : ''}</a>`
+  `<a href="#${type}" class="main-navigation__item ${type === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type="${type}">${name}${count ? ` <span class="main-navigation__item-count" data-filter-type="${type}">${count}</span>` : ''}</a>`
 );
 
 const createSiteMenuTemplate = (filters, currentFilter) => (
@@ -17,6 +17,8 @@ export default class SiteMenu extends AbstractView {
     this._filters = filters;
     this._currentFilter = currentFilter;
 
+    this._mainNavigationButtons = this.getElement().querySelectorAll('.main-navigation__item');
+
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
@@ -25,15 +27,12 @@ export default class SiteMenu extends AbstractView {
   }
 
   _filterTypeChangeHandler(evt) {
-    if (evt.target.tagName !== 'A') {
-      return;
-    }
     evt.preventDefault();
     this._callback.filterTypeChange(evt.target.dataset.filterType);
   }
 
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
-    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
+    this._mainNavigationButtons.forEach((element) => element.addEventListener('click', this._filterTypeChangeHandler));
   }
 }

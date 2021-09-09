@@ -66,15 +66,13 @@ export default class FilmBoard {
     return filteredFilms.slice().sort(SortStrategy[this._currentSortType]);
   }
 
-  _handleViewAction(actionType, updateType, update, comment) {
+  _handleViewAction(actionType, updateType, update) {
     if (actionType === UserAction.UPDATE_FILM) {
       this._filmsModel.updateFilm(updateType, update);
     } else if (actionType === UserAction.ADD_COMMENT) {
-      this._filmsModel.addComment(updateType, update, comment);
-      this._filmsModel.updateFilm(updateType, update);
+      this._filmsModel.addComment(updateType, update);
     } else if (actionType === UserAction.DELETE_COMMENT) {
-      this._filmsModel.deleteComment(updateType, update, comment);
-      this._filmsModel.updateFilm(updateType, update);
+      this._filmsModel.deleteComment(updateType, update);
     }
   }
 
