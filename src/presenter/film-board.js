@@ -45,14 +45,26 @@ export default class FilmBoard {
     this._handleSortClick = this._handleSortClick.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
-
-    this._filmsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     render(this._filmBoardContainer, this._filmBoardComponent, RenderPosition.BEFOREEND);
     this._renderFilmBoard();
+  }
+
+  getNode() {
+    return this._filmBoardComponent.getElement();
+  }
+
+  destroy() {
+    this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
+    remove(this._filmBoardComponent);
+
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getFilms() {

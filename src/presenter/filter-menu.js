@@ -1,6 +1,8 @@
 ﻿import SiteMenuView from '../view/site-menu.js';
 import { render, remove, replace, FilterStrategy } from '../utils';
-import { RenderPosition, FilterType, UpdateType } from '../consts';
+import { RenderPosition, FilterType, UpdateType, PageState } from '../consts';
+
+import { handleSiteMenuClick } from '../main.js';
 
 export default class FilterMenu {
   constructor(container, filmsModel, filterModel) {
@@ -17,20 +19,20 @@ export default class FilterMenu {
     this._filterModel.addObserver(this._handleModelEvent);
   }
 
-  init() {
+  init(menuItem = PageState.FILMS) {
     const filters = this._getFilters();
-    const prevFilterComponent = this._filterMenuComponent;
+    const prevFilterMenuComponent = this._filterMenuComponent;
 
-    this._filterMenuComponent = new SiteMenuView(filters, this._filterModel.getFilter());
+    this._filterMenuComponent = new SiteMenuView(filters, this._filterModel.getFilter(), menuItem);
     this._filterMenuComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._filterMenuComponent.setMenuItemClickHandler(handleSiteMenuClick);
 
-    if (prevFilterComponent === null) {
+    if (prevFilterMenuComponent === null) {
       render(this._filterMenuContainer, this._filterMenuComponent, RenderPosition.BEFOREEND);
       return;
     }
-
-    replace(this._filterMenuComponent, prevFilterComponent);
-    remove(prevFilterComponent);
+    replace(this._filterMenuComponent, prevFilterMenuComponent);
+    remove(prevFilterMenuComponent);
   }
 
   _getFilters() {
