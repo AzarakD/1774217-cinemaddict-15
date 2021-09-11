@@ -1,11 +1,12 @@
 import FilmsModel from './model/films.js';
 import FilterModel from './model/filter.js';
 import UserProfileView from './view/user-profile.js';
+import StatsView from './view/stats.js';
 import FilmCounterView from './view/film-counter.js';
 import FilterMenuPresenter from './presenter/filter-menu.js';
 import FilmBoardPresenter from './presenter/film-board.js';
 import { generateFilmCard } from './mock/film.js';
-import { render } from './utils.js';
+import { remove, render } from './utils.js';
 import { RenderPosition, PageState } from './consts.js';
 
 const FILM_COUNT = 20;
@@ -25,19 +26,43 @@ render(siteHeaderElement, new UserProfileView(films), RenderPosition.BEFOREEND);
 
 const filterMenuPresenter = new FilterMenuPresenter(siteMainElement, filmsModel, filterModel);
 const filmBoardPresenter = new FilmBoardPresenter(siteMainElement, filmsModel, filterModel);
+const statsComponent = new StatsView();
+
 
 export const handleSiteMenuClick = (menuItem) => {
   if (menuItem === PageState.FILMS) {
     if (siteMainElement.contains(filmBoardPresenter.getNode())) {
       return;
     }
+    remove(statsComponent);
+
     filterMenuPresenter.init();
     filmBoardPresenter.init();
   } else if (menuItem === PageState.STATS) {
     filmBoardPresenter.destroy();
     filterMenuPresenter.init(menuItem);
+
+    render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
   }
 };
+
+// export const handleSiteMenuClick = (menuItem) => {
+//   if (menuItem === PageState.STATS) {
+//     filmBoardPresenter.destroy();
+//     filterMenuPresenter.init(menuItem);
+
+//     render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
+//     return;
+//   }
+
+//   if (siteMainElement.contains(filmBoardPresenter.getNode())) {
+//     return;
+//   }
+//   remove(statsComponent);
+
+//   filterMenuPresenter.init();
+//   filmBoardPresenter.init();
+// };
 
 filterMenuPresenter.init();
 filmBoardPresenter.init();
