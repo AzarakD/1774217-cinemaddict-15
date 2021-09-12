@@ -22,12 +22,11 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const footerStatistic = document.querySelector('.footer__statistics');
 
-render(siteHeaderElement, new UserProfileView(films), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new UserProfileView(filmsModel.getFilms()), RenderPosition.BEFOREEND);
 
 const filterMenuPresenter = new FilterMenuPresenter(siteMainElement, filmsModel, filterModel);
 const filmBoardPresenter = new FilmBoardPresenter(siteMainElement, filmsModel, filterModel);
-const statsComponent = new StatsView();
-
+let statsComponent = null;
 
 export const handleSiteMenuClick = (menuItem) => {
   if (menuItem === PageState.FILMS) {
@@ -42,6 +41,7 @@ export const handleSiteMenuClick = (menuItem) => {
     filmBoardPresenter.destroy();
     filterMenuPresenter.init(menuItem);
 
+    statsComponent = new StatsView(filmsModel.getFilms());
     render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
   }
 };

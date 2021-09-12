@@ -95,7 +95,7 @@ export default class FilmBoard {
         return film && film.init(data);
       });
     } else if (updateType === UpdateType.MINOR) {
-      this._clearFilmBoard({resetRenderedFilmCount: true});
+      this._clearFilmBoard({resetRenderedFilmCount: true}); // false - уточнить в ТЗ
       this._renderFilmBoard();
       if (this._filmPopupPresenter) {
         this._filmPopupPresenter.updatePopup(data);

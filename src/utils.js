@@ -1,4 +1,4 @@
-﻿import { SortType, FilterType } from './consts.js';
+﻿import { SortType, FilterType, UserProfileRatings } from './consts.js';
 import Abstract from './view/abstract.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
@@ -111,6 +111,22 @@ export const getRandomUniqueSequenceFrom = (array, length) => {
   return newArray;
 };
 
+export const getWatchedFilms = (films) => films.filter((film) => film.userDetails.isWatched);
+
+export const getRank = (watchedFilms) => {
+  const watchedFilmsCount = watchedFilms.length;
+
+  if (watchedFilmsCount < 1) {
+    return '';
+  } else if (watchedFilmsCount < 11) {
+    return UserProfileRatings.NOVICE;
+  } else if (watchedFilmsCount < 21) {
+    return UserProfileRatings.FAN;
+  }
+
+  return UserProfileRatings.MOVIE_BUFF;
+};
+
 export const generateReleaseDate = () => {
   const maxDaysGap = 10000;
   const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
@@ -119,12 +135,12 @@ export const generateReleaseDate = () => {
 };
 
 export const generateDate = () => {
-  const maxDaysGap = 1000;
+  const maxDaysGap = 365;
   const maxMinuteGap = 720;
   const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
   const minuteGap = getRandomInteger(-maxMinuteGap, maxMinuteGap);
 
-  return dayjs('2015-01-01').add(daysGap, 'day').add(minuteGap, 'minute').format('YYYY/MM/DD hh:mm');
+  return dayjs('2020-09-12').add(daysGap, 'day').add(minuteGap, 'minute').format('YYYY/MM/DD hh:mm');
 };
 
 export const getCurrentDate = () => dayjs();
