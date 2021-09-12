@@ -29,40 +29,23 @@ const filmBoardPresenter = new FilmBoardPresenter(siteMainElement, filmsModel, f
 let statsComponent = null;
 
 export const handleSiteMenuClick = (menuItem) => {
-  if (menuItem === PageState.FILMS) {
-    if (siteMainElement.contains(filmBoardPresenter.getNode())) {
-      return;
-    }
-    remove(statsComponent);
-
-    filterMenuPresenter.init();
-    filmBoardPresenter.init();
-  } else if (menuItem === PageState.STATS) {
+  if (menuItem === PageState.STATS) {
     filmBoardPresenter.destroy();
     filterMenuPresenter.init(menuItem);
 
     statsComponent = new StatsView(filmsModel.getFilms());
     render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
+    return;
   }
+
+  if (siteMainElement.contains(filmBoardPresenter.getNode())) {
+    return;
+  }
+  remove(statsComponent);
+
+  filterMenuPresenter.init();
+  filmBoardPresenter.init();
 };
-
-// export const handleSiteMenuClick = (menuItem) => {
-//   if (menuItem === PageState.STATS) {
-//     filmBoardPresenter.destroy();
-//     filterMenuPresenter.init(menuItem);
-
-//     render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
-//     return;
-//   }
-
-//   if (siteMainElement.contains(filmBoardPresenter.getNode())) {
-//     return;
-//   }
-//   remove(statsComponent);
-
-//   filterMenuPresenter.init();
-//   filmBoardPresenter.init();
-// };
 
 filterMenuPresenter.init();
 filmBoardPresenter.init();

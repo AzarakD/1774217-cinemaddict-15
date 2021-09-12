@@ -1,47 +1,77 @@
 ﻿import SmartView from './smart.js';
+import { FilterPeriod } from '../consts.js';
+import { PeriodStrategy, getWatchedFilms, getRank } from '../utils.js';
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(isBetween);
-// import Chart from 'chart.js';
-// import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { FilterPeriod } from '../consts.js';
-import { getWatchedFilms, getRank } from '../utils.js';
 
+const renderChart = (statsCtx, {scoredGenres}) => {
+  const BAR_HEIGHT = 50;
 
-const getTotalDuration = (films) => {
-  let totalDuration = 0;
+  statsCtx.height = BAR_HEIGHT * scoredGenres.length;
 
-  films.forEach((film) => {
-    totalDuration += film.filmInfo.runtime;
+  return new Chart(statsCtx, {
+    plugins: [ChartDataLabels],
+    type: 'horizontalBar',
+    data: {
+      labels: scoredGenres.map((pair) => pair[0]),
+      datasets: [{
+        data: scoredGenres.map((pair) => pair[1]),
+        backgroundColor: '#ffe800',
+        hoverBackgroundColor: '#ffe800',
+        anchor: 'start',
+        barThickness: 24,
+      }],
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 20,
+          },
+          color: '#ffffff',
+          anchor: 'start',
+          align: 'start',
+          offset: 40,
+        },
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: '#ffffff',
+            padding: 100,
+            fontSize: 20,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+        }],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        enabled: false,
+      },
+    },
   });
-
-  return totalDuration;
 };
 
-const getTopGenre = (films) => {
-  const genresList = [];
-  const genresCountMap = new Map();
-
-  let topGenre = '';
-  let count = 0;
-
-  films.forEach((film) => genresList.push(...film.filmInfo.genres));
-  genresList.forEach((genre) => genresCountMap.set(genre, genresCountMap.get(genre) ? genresCountMap.get(genre) + 1 : 1));
-
-  for (const entry of genresCountMap) {
-    if (entry[1] > count) {
-      topGenre = entry[0];
-      count = entry[1];
-    }
-  }
-
-  return topGenre;
-};
-
-const createStatsTemplate = (films, profileRank, filter) => {
-  const totalDuration = getTotalDuration(films);
-
-  return `<section class="statistic">
+const createStatsTemplate = ({films, profileRank, filter, totalDuration, scoredGenres}) => (
+  `<section class="statistic">
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
@@ -78,7 +108,7 @@ const createStatsTemplate = (films, profileRank, filter) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">${getTopGenre(films)}</p>
+        <p class="statistic__item-text">${scoredGenres[0] ? scoredGenres[0][0] : ''}</p>
       </li>
     </ul>
 
@@ -86,30 +116,31 @@ const createStatsTemplate = (films, profileRank, filter) => {
       <canvas class="statistic__chart" width="1000"></canvas>
     </div>
 
-  </section>`;
-};
+  </section>`
+);
 
 export default class Stats extends SmartView {
   constructor(films) {
     super();
     this._films = getWatchedFilms(films);
-    this._allWatchedFilms = this._films.slice();
     this._profileRank = getRank(this._films);
-
     this._currentFilter = FilterPeriod.ALL_TIME;
 
+    this._data = this._parseFilmsToData(this._films);
+
     this._filterClickHandler = this._filterClickHandler.bind(this);
-    this._filterFilmsByPeriod = this._filterFilmsByPeriod.bind(this);
 
     this._setFilterClickHandler();
+    this._setChart();
   }
 
   getTemplate() {
-    return createStatsTemplate(this._films, this._profileRank, this._currentFilter);
+    return createStatsTemplate(this._data);
   }
 
   restoreHandlers() {
     this._setFilterClickHandler();
+    this._setChart();
   }
 
   _setFilterClickHandler() {
@@ -117,24 +148,61 @@ export default class Stats extends SmartView {
       addEventListener('input', this._filterClickHandler);
   }
 
-  _filterClickHandler(evt) {
-    this._currentFilter = evt.target.value;
-    this._films = this._filterFilmsByPeriod(this._allWatchedFilms, this._currentFilter);
+  _setChart() {
+    if (this._chart !== null) {
+      this._chart = null;
+    }
 
-    this.updateElement();
+    const statsChart = this.getElement().querySelector('.statistic__chart');
+
+    this._chart = renderChart(statsChart, this._data);
   }
 
-  _filterFilmsByPeriod(films, period) {
-    if (period === FilterPeriod.ALL_TIME) {
+  _filterClickHandler(evt) {
+    this._currentFilter = evt.target.value;
+    const filteredFilms = this._filterFilmsByPeriod(this._films);
+
+    this.updateData(this._parseFilmsToData(filteredFilms));
+  }
+
+  _filterFilmsByPeriod(films) {
+    if (this._currentFilter === FilterPeriod.ALL_TIME) {
       return films;
-    } else if (period === FilterPeriod.TODAY) {
-      return films.filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), 'day'));
-    } else if (period === FilterPeriod.WEEK) {
-      return films.filter((film) => dayjs(film.userDetails.watchingDate).isBetween(dayjs().add(-7, 'day'), dayjs(), 'day'));
-    } else if (period === FilterPeriod.MONTH) {
-      return films.filter((film) => dayjs(film.userDetails.watchingDate).isBetween(dayjs().add(-30, 'day'), dayjs(), 'day'));
-    } else if (period === FilterPeriod.YEAR) {
-      return films.filter((film) => dayjs(film.userDetails.watchingDate).isBetween(dayjs().add(-365, 'day'), dayjs(), 'day'));
     }
+
+    return films.filter((film) => dayjs(film.userDetails.watchingDate).isBetween(PeriodStrategy[this._currentFilter](), dayjs().toDate()));
+  }
+
+  _getTotalDuration(films) {
+    let totalDuration = 0;
+
+    films.forEach((film) => {
+      totalDuration += film.filmInfo.runtime;
+    });
+
+    return totalDuration;
+  }
+
+  _getScoredGenres(films) {
+    const genresList = [];
+    const genresCountMap = new Map();
+
+    films.forEach((film) => genresList.push(...film.filmInfo.genres));
+    genresList.forEach((genre) => genresCountMap.set(genre, genresCountMap.get(genre) ? genresCountMap.get(genre) + 1 : 1));
+
+    const scoredGenres = Array.from(genresCountMap);
+    scoredGenres.sort((a, b) => b[1] - a[1]);
+
+    return scoredGenres;
+  }
+
+  _parseFilmsToData(films) {
+    return {
+      films: films.slice(),
+      profileRank: this._profileRank,
+      filter: this._currentFilter,
+      totalDuration: this._getTotalDuration(films),
+      scoredGenres: this._getScoredGenres(films),
+    };
   }
 }

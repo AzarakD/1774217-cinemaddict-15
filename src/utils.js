@@ -1,10 +1,17 @@
-﻿import { SortType, FilterType, UserProfileRatings } from './consts.js';
+﻿import { SortType, FilterType, UserProfileRatings, FilterPeriod } from './consts.js';
 import Abstract from './view/abstract.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
+
+export const PeriodStrategy = {
+  [FilterPeriod.TODAY]: () => dayjs().subtract(1, 'day').toDate(),
+  [FilterPeriod.WEEK]: () => dayjs().subtract(1, 'week').toDate(),
+  [FilterPeriod.MONTH]: () => dayjs().subtract(1, 'month').toDate(),
+  [FilterPeriod.YEAR]: () => dayjs().subtract(1, 'year').toDate(),
+};
 
 export const FilterStrategy = {
   [FilterType.ALL]: (films) => films,
