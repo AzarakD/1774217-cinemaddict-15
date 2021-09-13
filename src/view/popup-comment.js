@@ -95,14 +95,20 @@ export default class PopupComment extends SmartView {
 
   _commentDeleteHandler(evt) {
     evt.preventDefault();
+    const commentIndex = this._data.comments.findIndex((comment) => comment.id === evt.target.dataset.id);
+
+    this._data.comments = [
+      ...this._data.comments.slice(0, commentIndex),
+      ...this._data.comments.slice(commentIndex + 1),
+    ];
+
     this._data = PopupComment.parseDataToFilm(this._data);
+
     this._updateCard(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
       this._data,
-      evt.target.dataset.id,
     );
-
     this.updateElement();
   }
 
@@ -130,15 +136,16 @@ export default class PopupComment extends SmartView {
           date: getCurrentDate(),
           id: nanoid(),
         };
+
         this._data.comments.push(this._newComment);
         this._data = PopupComment.parseDataToFilm(this._data);
-        this.updateElement();
+
         this._updateCard(
           UserAction.ADD_COMMENT,
           UpdateType.PATCH,
           this._data,
-          this._newComment,
         );
+        this.updateElement();
       }
     }
   }

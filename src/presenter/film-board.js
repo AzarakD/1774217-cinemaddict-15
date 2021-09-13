@@ -45,14 +45,26 @@ export default class FilmBoard {
     this._handleSortClick = this._handleSortClick.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
-
-    this._filmsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     render(this._filmBoardContainer, this._filmBoardComponent, RenderPosition.BEFOREEND);
     this._renderFilmBoard();
+  }
+
+  getNode() {
+    return this._filmBoardComponent.getElement();
+  }
+
+  destroy() {
+    this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
+    remove(this._filmBoardComponent);
+
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getFilms() {
@@ -66,15 +78,13 @@ export default class FilmBoard {
     return filteredFilms.slice().sort(SortStrategy[this._currentSortType]);
   }
 
-  _handleViewAction(actionType, updateType, update, comment) {
+  _handleViewAction(actionType, updateType, update) {
     if (actionType === UserAction.UPDATE_FILM) {
       this._filmsModel.updateFilm(updateType, update);
     } else if (actionType === UserAction.ADD_COMMENT) {
-      this._filmsModel.addComment(updateType, update, comment);
-      this._filmsModel.updateFilm(updateType, update);
+      this._filmsModel.addComment(updateType, update);
     } else if (actionType === UserAction.DELETE_COMMENT) {
-      this._filmsModel.deleteComment(updateType, update, comment);
-      this._filmsModel.updateFilm(updateType, update);
+      this._filmsModel.deleteComment(updateType, update);
     }
   }
 
@@ -85,7 +95,7 @@ export default class FilmBoard {
         return film && film.init(data);
       });
     } else if (updateType === UpdateType.MINOR) {
-      this._clearFilmBoard({resetRenderedFilmCount: true});
+      this._clearFilmBoard();
       this._renderFilmBoard();
       if (this._filmPopupPresenter) {
         this._filmPopupPresenter.updatePopup(data);
