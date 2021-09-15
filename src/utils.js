@@ -167,3 +167,5 @@ export const generateToken = (keyLen = 15) => {
 
   return token;
 };
+
+export const formatDate = (date, format='DD MMMM YYYY') => date ? dayjs(date).format(format) : null;

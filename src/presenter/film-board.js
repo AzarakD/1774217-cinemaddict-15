@@ -38,7 +38,6 @@ export default class FilmBoard {
     this._filmEmptyListComponent = null;
 
     this._filmPopupContainer = document.querySelector('body');
-    this._profileName = document.querySelector('.profile__rating').textContent;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleShowMoreBtnClick = this._handleShowMoreBtnClick.bind(this);
@@ -103,6 +102,8 @@ export default class FilmBoard {
     } else if (updateType === UpdateType.MAJOR) {
       this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
       this._renderFilmBoard();
+    } else if (updateType === UpdateType.INIT) {
+      this._renderFilmBoard();
     }
   }
 
@@ -113,6 +114,10 @@ export default class FilmBoard {
     if (filmCount === 0) {
       this._renderEmptyFilmListComponent();
       return;
+    }
+
+    if (this._filmEmptyListComponent) {
+      remove(this._filmEmptyListComponent);
     }
 
     this._renderSort();
@@ -130,10 +135,6 @@ export default class FilmBoard {
     const filmCount = this._films.length;
 
     this._presenterMaps.forEach((presenterMap) => this._clearPresenter(presenterMap));
-
-    if (this._filmEmptyListComponent) {
-      remove(this._filmEmptyListComponent);
-    }
 
     remove(this._sortComponent);
     remove(this._showMoreBtnComponent);
@@ -195,7 +196,7 @@ export default class FilmBoard {
     if (this._filmPopupPresenter) {
       this._filmPopupPresenter.destroy();
     }
-    this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction, this._profileName);
+    this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
 
     this._filmPopupPresenter.init(presenterMap.get(film.id).film);
   }

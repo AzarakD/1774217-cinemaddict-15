@@ -6,8 +6,10 @@ export default class Films extends AbstractObserver {
     this._films = [];
   }
 
-  setFilms(films) {
+  setFilms(updateType, films) {
     this._films = films.slice();
+
+    this._notify(updateType);
   }
 
   getFilms() {
@@ -56,5 +58,63 @@ export default class Films extends AbstractObserver {
     this._films[filmIndex].comments = [...updatedFilm.comments];
 
     this._notify(updateType, updatedFilm);
+  }
+
+  static adaptToClient(film) {
+    return {
+      id: film.id,
+      comments: film.comments,
+      filmInfo: {
+        poster: film.film_info.poster,
+        title: film.film_info.title,
+        alternativeTitle: film.film_info.alternative_title,
+        rating: film.film_info.total_rating,
+        director: film.film_info.director,
+        writers: film.film_info.writers,
+        actors: film.film_info.actors,
+        releaseDate: film.film_info.release.date,
+        runtime: film.film_info.runtime,
+        country: film.film_info.release.release_country,
+        genres: film.film_info.genre,
+        description: film.film_info.description,
+        ageRating: film.film_info.age_rating,
+      },
+      userDetails: {
+        isInWatchlist: film.user_details.watchlist,
+        isWatched: film.user_details.already_watched,
+        isFavorite: film.user_details.favorite,
+        watchingDate: film.user_details.watching_date,
+      },
+    };
+  }
+
+  static adaptToServer(film) {
+    return {
+      'id': film.id,
+      'comments': film.comments,
+      'film_info': {
+        'title': film.filmInfo.title,
+        'alternative_title': film.filmInfo.alternativeTitle,
+        'total_rating': film.filmInfo.rating,
+        'poster': film.filmInfo.poster,
+        'age_rating': film.filmInfo.ageRating,
+        'director': film.filmInfo.director,
+        'writers': film.filmInfo.writers,
+        'actors': film.filmInfo.actors,
+        'release': {
+          'date': film.filmInfo.releaseDate,
+          'release_country': film.filmInfo.country,
+        },
+        'runtime': film.filmInfo.runtime,
+        'genre': film.filmInfo.genres,
+        'description': film.filmInfo.description,
+      },
+      'user_details': {
+        'watchlist': film.userDetails.isInWatchlist,
+        'already_watched': film.userDetails.isWatched,
+        'watching_date': film.userDetails.watchingDate,
+        'favorite': film.userDetails.isFavorite,
+      },
+    };
   }
 }

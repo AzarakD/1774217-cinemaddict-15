@@ -5,10 +5,11 @@ import { render, remove } from '../utils.js';
 import { RenderPosition } from '../consts.js';
 
 export default class FilmPopup {
-  constructor(container, changeData, profieName) {
+  constructor(container, changeData) {
     this._filmPopupContainer = container;
     this._changeData = changeData;
-    this._profileName = profieName;
+
+    this._profileName = this._profileName = document.querySelector('.profile__rating').textContent;
 
     this._closePopup = this._closePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
