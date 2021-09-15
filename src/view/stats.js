@@ -7,9 +7,9 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(isBetween);
 
-const renderChart = (statsCtx, {scoredGenres}) => {
-  const BAR_HEIGHT = 50;
+const BAR_HEIGHT = 50;
 
+const renderChart = (statsCtx, {scoredGenres}) => {
   statsCtx.height = BAR_HEIGHT * scoredGenres.length;
 
   return new Chart(statsCtx, {
