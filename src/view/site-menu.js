@@ -2,13 +2,13 @@
 import { PageState } from '../consts.js';
 
 const createFilterButton = ({type, name, count}, currentFilter, menuItem) => (
-  `<a href="#${type}" class="main-navigation__item ${menuItem === PageState.FILMS && type === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type="${type}">${name}${count ? ` <span class="main-navigation__item-count" data-filter-type="${type}">${count}</span>` : ''}</a>`
+  `<a href="#${type}" class="main-navigation__item${menuItem === PageState.FILMS && type === currentFilter ? ' main-navigation__item--active' : ''}" data-filter-type="${type}">${name}${count > -1 ? ` <span class="main-navigation__item-count" data-filter-type="${type}">${count}</span>` : ''}</a>`
 );
 
 const createSiteMenuTemplate = (filters, currentFilter, menuItem) => (
   `<nav class="main-navigation">
     <div class="main-navigation__items">${filters.map((filter) => createFilterButton(filter, currentFilter, menuItem)).join(' ')}</div>
-    <a href="#stats" class="main-navigation__additional ${menuItem === PageState.STATS ? 'main-navigation__item--active' : ''}" data-filter-type="Stats">Stats</a>
+    <a href="#stats" class="main-navigation__additional${menuItem === PageState.STATS ? ' main-navigation__item--active' : ''}" data-filter-type="Stats">Stats</a>
   </nav>`
 );
 

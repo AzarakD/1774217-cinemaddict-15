@@ -7,6 +7,7 @@ import SortView from '../view/sort.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import ExtraTopRatedView from '../view/extra-top-rated.js';
 import ExtraTopCommentedView from '../view/extra-top-commented.js';
+import LoadingView from '../view/loading.js';
 import { render, remove, SortStrategy, FilterStrategy } from '../utils.js';
 import { RenderPosition, SortType, UserAction, UpdateType, FilterType } from '../consts.js';
 
@@ -20,6 +21,7 @@ export default class FilmBoard {
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filterType = FilterType.ALL;
+    this._isLoading = true;
 
     this._filmPresenterMap = new Map();
     this._extraTopRatedPresenterMap = new Map();
@@ -31,6 +33,7 @@ export default class FilmBoard {
       this._extraTopCommentedPresenterMap,
     ];
 
+    this._loadingComponent = new LoadingView();
     this._filmBoardComponent = new FilmBoardView();
     this._filmListComponent = null;
     this._sortComponent = null;
@@ -103,21 +106,28 @@ export default class FilmBoard {
       this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
       this._renderFilmBoard();
     } else if (updateType === UpdateType.INIT) {
+      this._isLoading = false;
+      remove(this._loadingComponent);
       this._renderFilmBoard();
     }
   }
 
   _renderFilmBoard() {
+    if (this._isLoading) {
+      render(this._filmBoardComponent, this._loadingComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    // if (this._filmEmptyListComponent) {
+    //   remove(this._filmEmptyListComponent);
+    // }
+
     this._films = this._getFilms();
     const filmCount = this._films.length;
 
     if (filmCount === 0) {
       this._renderEmptyFilmListComponent();
       return;
-    }
-
-    if (this._filmEmptyListComponent) {
-      remove(this._filmEmptyListComponent);
     }
 
     this._renderSort();
@@ -136,9 +146,14 @@ export default class FilmBoard {
 
     this._presenterMaps.forEach((presenterMap) => this._clearPresenter(presenterMap));
 
+    remove(this._loadingComponent);
     remove(this._sortComponent);
     remove(this._showMoreBtnComponent);
     remove(this._filmListComponent);
+
+    if (this._filmEmptyListComponent) {
+      remove(this._filmEmptyListComponent);
+    }
 
     if (this._extraTopRatedComponent) {
       remove(this._extraTopRatedComponent);

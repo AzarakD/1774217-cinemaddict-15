@@ -5,27 +5,21 @@ import StatsView from './view/stats.js';
 import FilmCounterView from './view/film-counter.js';
 import FilterMenuPresenter from './presenter/filter-menu.js';
 import FilmBoardPresenter from './presenter/film-board.js';
-// import { generateFilmCard } from './mock/film.js';
 import { remove, render } from './utils.js';
 import { RenderPosition, PageState, UpdateType } from './consts.js';
 import Api from './api.js';
 
-// const FILM_COUNT = 20;
 const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 const AUTHORIZATION = 'Basic BBziUcTOvPtL7Qy';
 
-// const films = new Array(FILM_COUNT).fill().map(generateFilmCard);
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const filmsModel = new FilmsModel();
-// filmsModel.setFilms(films);
 const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const footerStatistic = document.querySelector('.footer__statistics');
-
-// render(siteHeaderElement, new UserProfileView(filmsModel.getFilms()), RenderPosition.BEFOREEND);
 
 const filterMenuPresenter = new FilterMenuPresenter(siteMainElement, filmsModel, filterModel);
 const filmBoardPresenter = new FilmBoardPresenter(siteMainElement, filmsModel, filterModel);
