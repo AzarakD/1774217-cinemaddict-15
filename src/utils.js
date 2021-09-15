@@ -1,4 +1,4 @@
-﻿import { SortType, FilterType, UserProfileRatings, FilterPeriod } from './consts.js';
+﻿import { SortType, FilterType, UserProfileRatings, FilterPeriod, CHARS } from './consts.js';
 import Abstract from './view/abstract.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
@@ -157,3 +157,13 @@ export const getHoursAndMinutes = (time) => time < 60 ? `${time}m` : dayjs.durat
 export const formatReleaseDate = (date) => dayjs(date).format('DD MMMM YYYY');
 
 export const humanizeDate = (date) => dayjs(date).fromNow();
+
+export const generateToken = (keyLen = 15) => {
+  let token = 'Basic ';
+
+  for (let iter = 0; iter < keyLen; iter++) {
+    token += getRandomElement(CHARS);
+  }
+
+  return token;
+};
