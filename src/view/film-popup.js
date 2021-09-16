@@ -1,7 +1,7 @@
 ﻿import AbstractView from './abstract.js';
 import { getHoursAndMinutes, formatDate } from '../utils.js';
 
-const createFilmPopupTemplate = ({filmInfo}, errorMessage) => {
+const createFilmPopupTemplate = ({filmInfo}, comments) => {
   const genres = filmInfo.genres.map((element) => `<span class="film-details__genre">${element}</span>`);
 
   return `<section class="film-details">
@@ -65,22 +65,22 @@ const createFilmPopupTemplate = ({filmInfo}, errorMessage) => {
         </div>
       </div>
 
-      <div class="film-details__bottom-container">${errorMessage ? 'Failed to load comment section :( Try again later.' : ''}</div>
+      <div class="film-details__bottom-container">${!comments ? 'Failed to load comment section :( Try again later.' : ''}</div>
     </form>
   </section>`;
 };
 
 export default class FilmPopup extends AbstractView {
-  constructor(film, error) {
+  constructor(film, comments) {
     super();
     this._film = film;
-    this._errorMessage = error;
+    this._comments = comments;
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmPopupTemplate(this._film, this._errorMessage);
+    return createFilmPopupTemplate(this._film, this._comments);
   }
 
   get topContainer() {

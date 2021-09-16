@@ -103,7 +103,7 @@ export default class FilmBoard {
       this._clearFilmBoard();
       this._renderFilmBoard();
       if (this._filmPopupPresenter) {
-        this._filmPopupPresenter.updatePopup(data);
+        this._filmPopupPresenter.updatePopup(updateType, data);
       }
     } else if (updateType === UpdateType.MAJOR) {
       this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
@@ -214,11 +214,11 @@ export default class FilmBoard {
     this._api.getComments(film.id)
       .then((comments) => {
         this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
-        this._filmPopupPresenter.init({...presenterMap.get(film.id).film, comments});
+        this._filmPopupPresenter.init(presenterMap.get(film.id).film, comments);
       })
-      .catch((error) => {
+      .catch(() => {
         this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
-        this._filmPopupPresenter.init(presenterMap.get(film.id).film, error);
+        this._filmPopupPresenter.init(presenterMap.get(film.id).film, null);
       });
   }
 

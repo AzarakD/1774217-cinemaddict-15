@@ -2,7 +2,7 @@
 import PopupCommentView from '../view/popup-comment.js';
 import PopupControlsView from '../view/popup-controls.js';
 import { render, remove } from '../utils.js';
-import { RenderPosition } from '../consts.js';
+import { RenderPosition, UpdateType } from '../consts.js';
 
 export default class FilmPopup {
   constructor(container, changeData) {
@@ -15,13 +15,14 @@ export default class FilmPopup {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  init(film, error = null) {
+  init(film, comments) {
     this._film = film;
+    this._comments = comments;
 
-    this._filmPopupComponent = new FilmPopupView(this._film, error);
+    this._filmPopupComponent = new FilmPopupView(this._film, this._comments);
     this._popupControlsComponent = new PopupControlsView(this._film, this._changeData);
-    if (!error) {
-      this._popupCommentComponent = new PopupCommentView(this._film, this._changeData, this._profileName);
+    if (this._comments) {
+      this._popupCommentComponent = new PopupCommentView(this._film, this._comments, this._changeData, this._profileName);
     }
 
     this._setFilmPopupHandler();
@@ -32,9 +33,12 @@ export default class FilmPopup {
     this._closePopup();
   }
 
-  updatePopup(data) {
-    this._popupControlsComponent.updateData(data);
-    this._popupCommentComponent.updateData(data);
+  updatePopup(updateType, data) {
+    if (updateType === UpdateType.MINOR && this._film.id === data.id) {
+      this._popupControlsComponent.updateData(data);
+    } else if (updateType === UpdateType.PATCH && this._film.id === data.id) {
+      this._popupCommentComponent.updateData(data);
+    }
   }
 
   _renderPopup() {
