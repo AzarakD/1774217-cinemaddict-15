@@ -13,4 +13,16 @@ export default class FilmCounter extends AbstractView{
   getTemplate() {
     return createFilmCounterTemplate(this._films);
   }
+
+  updateElement(films) {
+    this._films = films;
+
+    const prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+  }
 }

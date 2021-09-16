@@ -7,19 +7,22 @@ import SortView from '../view/sort.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import ExtraTopRatedView from '../view/extra-top-rated.js';
 import ExtraTopCommentedView from '../view/extra-top-commented.js';
+import LoadingView from '../view/loading.js';
 import { render, remove, SortStrategy, FilterStrategy } from '../utils.js';
 import { RenderPosition, SortType, UserAction, UpdateType, FilterType } from '../consts.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmBoard {
-  constructor(container, filmsModel, filterModel) {
+  constructor(container, filmsModel, filterModel, api) {
     this._filmBoardContainer = container;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filterType = FilterType.ALL;
+    this._api = api;
+    this._isLoading = true;
 
     this._filmPresenterMap = new Map();
     this._extraTopRatedPresenterMap = new Map();
@@ -31,6 +34,7 @@ export default class FilmBoard {
       this._extraTopCommentedPresenterMap,
     ];
 
+    this._loadingComponent = new LoadingView();
     this._filmBoardComponent = new FilmBoardView();
     this._filmListComponent = null;
     this._sortComponent = null;
@@ -38,7 +42,6 @@ export default class FilmBoard {
     this._filmEmptyListComponent = null;
 
     this._filmPopupContainer = document.querySelector('body');
-    this._profileName = document.querySelector('.profile__rating').textContent;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleShowMoreBtnClick = this._handleShowMoreBtnClick.bind(this);
@@ -80,7 +83,9 @@ export default class FilmBoard {
 
   _handleViewAction(actionType, updateType, update) {
     if (actionType === UserAction.UPDATE_FILM) {
-      this._filmsModel.updateFilm(updateType, update);
+      this._api.updateFilm(update).then((response) => {
+        this._filmsModel.updateFilm(updateType, response);
+      });
     } else if (actionType === UserAction.ADD_COMMENT) {
       this._filmsModel.addComment(updateType, update);
     } else if (actionType === UserAction.DELETE_COMMENT) {
@@ -98,15 +103,24 @@ export default class FilmBoard {
       this._clearFilmBoard();
       this._renderFilmBoard();
       if (this._filmPopupPresenter) {
-        this._filmPopupPresenter.updatePopup(data);
+        this._filmPopupPresenter.updatePopup(updateType, data);
       }
     } else if (updateType === UpdateType.MAJOR) {
       this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
+      this._renderFilmBoard();
+    } else if (updateType === UpdateType.INIT) {
+      this._isLoading = false;
+      remove(this._loadingComponent);
       this._renderFilmBoard();
     }
   }
 
   _renderFilmBoard() {
+    if (this._isLoading) {
+      render(this._filmBoardComponent, this._loadingComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
     this._films = this._getFilms();
     const filmCount = this._films.length;
 
@@ -131,13 +145,14 @@ export default class FilmBoard {
 
     this._presenterMaps.forEach((presenterMap) => this._clearPresenter(presenterMap));
 
-    if (this._filmEmptyListComponent) {
-      remove(this._filmEmptyListComponent);
-    }
-
+    remove(this._loadingComponent);
     remove(this._sortComponent);
     remove(this._showMoreBtnComponent);
     remove(this._filmListComponent);
+
+    if (this._filmEmptyListComponent) {
+      remove(this._filmEmptyListComponent);
+    }
 
     if (this._extraTopRatedComponent) {
       remove(this._extraTopRatedComponent);
@@ -195,9 +210,16 @@ export default class FilmBoard {
     if (this._filmPopupPresenter) {
       this._filmPopupPresenter.destroy();
     }
-    this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction, this._profileName);
 
-    this._filmPopupPresenter.init(presenterMap.get(film.id).film);
+    this._api.getComments(film.id)
+      .then((comments) => {
+        this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
+        this._filmPopupPresenter.init(presenterMap.get(film.id).film, comments);
+      })
+      .catch(() => {
+        this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
+        this._filmPopupPresenter.init(presenterMap.get(film.id).film, null);
+      });
   }
 
   _renderFilm(container, film, presenterMap) {

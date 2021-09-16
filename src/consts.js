@@ -8,6 +8,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const SortType = {
@@ -49,3 +50,5 @@ export const FilterPeriod = {
   MONTH: 'month',
   YEAR: 'year',
 };
+
+export const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

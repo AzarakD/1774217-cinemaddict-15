@@ -59,9 +59,9 @@ const createPopupCommentTemplate = ({comments, newCommentEmotion, newCommentMess
 );
 
 export default class PopupComment extends SmartView {
-  constructor(film, updateCard, profileName) {
+  constructor(film, comments, updateCard, profileName) {
     super();
-    this._data = PopupComment.parseFilmToData(film);
+    this._data = PopupComment.parseFilmToData(film, comments);
     this._updateCard = updateCard;
     this._profileName = profileName;
 
@@ -154,9 +154,10 @@ export default class PopupComment extends SmartView {
     this.getElement().addEventListener('keydown', this._newCommentSubmitHandler);
   }
 
-  static parseFilmToData(film) {
+  static parseFilmToData(film, comments) {
     return {
       ...film,
+      comments: comments,
       newCommentEmotion: null,
       newCommentMessage: null,
     };

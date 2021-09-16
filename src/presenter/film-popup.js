@@ -2,24 +2,28 @@
 import PopupCommentView from '../view/popup-comment.js';
 import PopupControlsView from '../view/popup-controls.js';
 import { render, remove } from '../utils.js';
-import { RenderPosition } from '../consts.js';
+import { RenderPosition, UpdateType } from '../consts.js';
 
 export default class FilmPopup {
-  constructor(container, changeData, profieName) {
+  constructor(container, changeData) {
     this._filmPopupContainer = container;
     this._changeData = changeData;
-    this._profileName = profieName;
+
+    this._profileName = this._profileName = document.querySelector('.profile__rating').textContent;
 
     this._closePopup = this._closePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  init(film) {
+  init(film, comments) {
     this._film = film;
+    this._comments = comments;
 
-    this._filmPopupComponent = new FilmPopupView(this._film);
-    this._popupCommentComponent = new PopupCommentView(this._film, this._changeData, this._profileName);
+    this._filmPopupComponent = new FilmPopupView(this._film, this._comments);
     this._popupControlsComponent = new PopupControlsView(this._film, this._changeData);
+    if (this._comments) {
+      this._popupCommentComponent = new PopupCommentView(this._film, this._comments, this._changeData, this._profileName);
+    }
 
     this._setFilmPopupHandler();
     this._renderPopup();
@@ -29,16 +33,21 @@ export default class FilmPopup {
     this._closePopup();
   }
 
-  updatePopup(data) {
-    this._popupControlsComponent.updateData(data);
-    this._popupCommentComponent.updateData(data);
+  updatePopup(updateType, data) {
+    if (updateType === UpdateType.MINOR && this._film.id === data.id) {
+      this._popupControlsComponent.updateData(data);
+    } else if (updateType === UpdateType.PATCH && this._film.id === data.id) {
+      this._popupCommentComponent.updateData(data);
+    }
   }
 
   _renderPopup() {
     this._filmPopupContainer.classList.add('hide-overflow');
 
     render(this._filmPopupContainer, this._filmPopupComponent, RenderPosition.BEFOREEND);
-    render(this._filmPopupComponent.bottomContainer, this._popupCommentComponent, RenderPosition.BEFOREEND);
+    if (this._popupCommentComponent) {
+      render(this._filmPopupComponent.bottomContainer, this._popupCommentComponent, RenderPosition.BEFOREEND);
+    }
     render(this._filmPopupComponent.topContainer, this._popupControlsComponent, RenderPosition.BEFOREEND);
 
     document.addEventListener('keydown', this._onEscKeyDown);
