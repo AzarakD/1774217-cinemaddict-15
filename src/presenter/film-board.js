@@ -211,10 +211,15 @@ export default class FilmBoard {
       this._filmPopupPresenter.destroy();
     }
 
-    this._api.getComments(film.id).then((comments) => {
-      this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
-      this._filmPopupPresenter.init({...presenterMap.get(film.id).film, comments});
-    });
+    this._api.getComments(film.id)
+      .then((comments) => {
+        this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
+        this._filmPopupPresenter.init({...presenterMap.get(film.id).film, comments});
+      })
+      .catch((error) => {
+        this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
+        this._filmPopupPresenter.init(presenterMap.get(film.id).film, error);
+      });
   }
 
   _renderFilm(container, film, presenterMap) {

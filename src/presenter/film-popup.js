@@ -15,12 +15,14 @@ export default class FilmPopup {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  init(film) {
+  init(film, error = null) {
     this._film = film;
 
-    this._filmPopupComponent = new FilmPopupView(this._film);
-    this._popupCommentComponent = new PopupCommentView(this._film, this._changeData, this._profileName);
+    this._filmPopupComponent = new FilmPopupView(this._film, error);
     this._popupControlsComponent = new PopupControlsView(this._film, this._changeData);
+    if (!error) {
+      this._popupCommentComponent = new PopupCommentView(this._film, this._changeData, this._profileName);
+    }
 
     this._setFilmPopupHandler();
     this._renderPopup();
@@ -39,7 +41,9 @@ export default class FilmPopup {
     this._filmPopupContainer.classList.add('hide-overflow');
 
     render(this._filmPopupContainer, this._filmPopupComponent, RenderPosition.BEFOREEND);
-    render(this._filmPopupComponent.bottomContainer, this._popupCommentComponent, RenderPosition.BEFOREEND);
+    if (this._popupCommentComponent) {
+      render(this._filmPopupComponent.bottomContainer, this._popupCommentComponent, RenderPosition.BEFOREEND);
+    }
     render(this._filmPopupComponent.topContainer, this._popupControlsComponent, RenderPosition.BEFOREEND);
 
     document.addEventListener('keydown', this._onEscKeyDown);
