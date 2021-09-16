@@ -14,13 +14,14 @@ import { RenderPosition, SortType, UserAction, UpdateType, FilterType } from '..
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmBoard {
-  constructor(container, filmsModel, filterModel) {
+  constructor(container, filmsModel, filterModel, api) {
     this._filmBoardContainer = container;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filterType = FilterType.ALL;
+    this._api = api;
     this._isLoading = true;
 
     this._filmPresenterMap = new Map();
@@ -82,7 +83,9 @@ export default class FilmBoard {
 
   _handleViewAction(actionType, updateType, update) {
     if (actionType === UserAction.UPDATE_FILM) {
-      this._filmsModel.updateFilm(updateType, update);
+      this._api.updateFilm(update).then((response) => {
+        this._filmsModel.updateFilm(updateType, response);
+      });
     } else if (actionType === UserAction.ADD_COMMENT) {
       this._filmsModel.addComment(updateType, update);
     } else if (actionType === UserAction.DELETE_COMMENT) {
@@ -117,10 +120,6 @@ export default class FilmBoard {
       render(this._filmBoardComponent, this._loadingComponent, RenderPosition.BEFOREEND);
       return;
     }
-
-    // if (this._filmEmptyListComponent) {
-    //   remove(this._filmEmptyListComponent);
-    // }
 
     this._films = this._getFilms();
     const filmCount = this._films.length;
@@ -211,9 +210,11 @@ export default class FilmBoard {
     if (this._filmPopupPresenter) {
       this._filmPopupPresenter.destroy();
     }
-    this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
 
-    this._filmPopupPresenter.init(presenterMap.get(film.id).film);
+    this._api.getComments(film.id).then((comments) => {
+      this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
+      this._filmPopupPresenter.init({...presenterMap.get(film.id).film, comments});
+    });
   }
 
   _renderFilm(container, film, presenterMap) {

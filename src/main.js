@@ -22,7 +22,8 @@ const siteMainElement = document.querySelector('.main');
 const footerStatistic = document.querySelector('.footer__statistics');
 
 const filterMenuPresenter = new FilterMenuPresenter(siteMainElement, filmsModel, filterModel);
-const filmBoardPresenter = new FilmBoardPresenter(siteMainElement, filmsModel, filterModel);
+const filmBoardPresenter = new FilmBoardPresenter(siteMainElement, filmsModel, filterModel, api);
+const filmCounterComponent = new FilmCounterView(filmsModel.getFilms());
 let statsComponent = null;
 
 export const handleSiteMenuClick = (menuItem) => {
@@ -47,12 +48,13 @@ export const handleSiteMenuClick = (menuItem) => {
 filterMenuPresenter.init();
 filmBoardPresenter.init();
 
-render(footerStatistic, new FilmCounterView(filmsModel), RenderPosition.BEFOREEND);
+render(footerStatistic, filmCounterComponent, RenderPosition.BEFOREEND);
 
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
-    render(siteHeaderElement, new UserProfileView(filmsModel.getFilms()), RenderPosition.BEFOREEND);
+    render(siteHeaderElement, new UserProfileView(films), RenderPosition.BEFOREEND);
+    filmCounterComponent.updateElement(films);
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);

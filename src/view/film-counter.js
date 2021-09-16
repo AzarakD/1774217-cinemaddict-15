@@ -1,28 +1,28 @@
 ﻿import AbstractView from './abstract.js';
-import { UpdateType } from '../consts.js';
 
 const createFilmCounterTemplate = (films) => (
   `<p>${films.length} movies inside</p>`
 );
 
 export default class FilmCounter extends AbstractView{
-  constructor(filmsModel) {
+  constructor(films) {
     super();
-    this._filmsModel = filmsModel;
-    this._handleModelEvent = this._handleModelEvent.bind(this);
-
-    this._filmsModel.addObserver(this._handleModelEvent);
+    this._films = films;
   }
 
   getTemplate() {
-    return createFilmCounterTemplate(this._filmsModel.getFilms());
+    return createFilmCounterTemplate(this._films);
   }
 
-  // updateElement ?
+  updateElement(films) {
+    this._films = films;
 
-  _handleModelEvent(updateType) {
-    if (updateType === UpdateType.INIT) {
-      this.getElement().innerText = `${this._filmsModel.getFilms().length} movies inside`;
-    }
+    const prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
   }
 }
