@@ -88,11 +88,14 @@ export default class FilmBoard {
       });
     } else if (actionType === UserAction.ADD_COMMENT) {
       this._api.addComment(update, comment).then((response) => {
-        this._filmsModel.updateFilm(updateType, response);
+        this._filmsModel.addComment(updateType, response);
         this._filmPopupPresenter.updatePopup(updateType, response);
       });
     } else if (actionType === UserAction.DELETE_COMMENT) {
-      this._filmsModel.deleteComment(updateType, update);
+      this._api.deleteComment(comment).then(() => {
+        this._filmsModel.deleteComment(updateType, update);
+        this._filmPopupPresenter.updatePopup(updateType, update);
+      });
     }
   }
 

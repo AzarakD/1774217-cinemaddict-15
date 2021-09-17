@@ -93,7 +93,8 @@ export default class PopupComment extends SmartView {
 
   _commentDeleteHandler(evt) {
     evt.preventDefault();
-    const commentIndex = this._data.comments.findIndex((comment) => comment.id === evt.target.dataset.id);
+    const commentServerId = evt.target.dataset.id;
+    const commentIndex = this._data.comments.findIndex((comment) => comment.id === commentServerId);
 
     this._data.comments = [
       ...this._data.comments.slice(0, commentIndex),
@@ -106,8 +107,8 @@ export default class PopupComment extends SmartView {
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
       this._data,
+      commentServerId,
     );
-    this.updateElement();
   }
 
   _emotionChangeHandler(evt) {
