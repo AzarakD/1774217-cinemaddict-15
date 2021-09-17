@@ -101,8 +101,6 @@ export const getRank = (watchedFilms) => {
   return UserProfileRatings.MOVIE_BUFF;
 };
 
-export const getCurrentDate = () => dayjs();
-
 export const getHoursAndMinutes = (time) => time < 60 ? `${time}m` : dayjs.duration(time, 'm').format('H[h] mm[m]');
 
 export const humanizeDate = (date) => dayjs(date).fromNow();

@@ -1,8 +1,7 @@
 ﻿import he from 'he';
 import SmartView from './smart.js';
-import { getCurrentDate, humanizeDate } from '../utils.js';
+import { humanizeDate } from '../utils.js';
 import { UserAction, UpdateType } from '../consts.js';
-import { nanoid } from 'nanoid';
 
 const createNewComment = (element) => (
   `<li class="film-details__comment">
@@ -59,11 +58,10 @@ const createPopupCommentTemplate = ({comments, newCommentEmotion, newCommentMess
 );
 
 export default class PopupComment extends SmartView {
-  constructor(film, comments, updateCard, profileName) {
+  constructor(film, comments, updateCard) {
     super();
     this._data = PopupComment.parseFilmToData(film, comments);
     this._updateCard = updateCard;
-    this._profileName = profileName;
 
     this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
     this._textInputHandler = this._textInputHandler.bind(this);
@@ -132,9 +130,6 @@ export default class PopupComment extends SmartView {
         this._newComment = {
           emotion: this._data.newCommentEmotion,
           comment: this._data.newCommentMessage,
-          author: this._profileName,
-          date: getCurrentDate(),
-          id: nanoid(),
         };
 
         this._data.comments.push(this._newComment);
@@ -144,8 +139,8 @@ export default class PopupComment extends SmartView {
           UserAction.ADD_COMMENT,
           UpdateType.PATCH,
           this._data,
+          this._newComment,
         );
-        this.updateElement();
       }
     }
   }

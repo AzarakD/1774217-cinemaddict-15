@@ -22,7 +22,7 @@ export default class FilmPopup {
     this._filmPopupComponent = new FilmPopupView(this._film, this._comments);
     this._popupControlsComponent = new PopupControlsView(this._film, this._changeData);
     if (this._comments) {
-      this._popupCommentComponent = new PopupCommentView(this._film, this._comments, this._changeData, this._profileName);
+      this._popupCommentComponent = new PopupCommentView(this._film, this._comments, this._changeData);
     }
 
     this._setFilmPopupHandler();
