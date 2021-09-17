@@ -43,17 +43,23 @@ export default class Films extends AbstractObserver {
       throw new Error('Can\'t add comment to unexisting film');
     }
 
-    this._films[filmIndex].comments = [...updatedFilm.comments];
+    this._films[filmIndex] = updatedFilm;
 
     this._notify(updateType, updatedFilm);
   }
 
-  deleteComment(updateType, updatedFilm) {
+  deleteComment(updateType, updatedFilm, commentId) {
     const filmIndex = this._findIndexById(updatedFilm);
 
     if (filmIndex === -1) {
       throw new Error('Can\'t delete comment of unexisting film');
     }
+    const commentIndex = updatedFilm.comments.findIndex((comment) => comment.id === commentId);
+
+    updatedFilm.comments = [
+      ...updatedFilm.comments.slice(0, commentIndex),
+      ...updatedFilm.comments.slice(commentIndex + 1),
+    ];
 
     this._films[filmIndex].comments = [...updatedFilm.comments];
 

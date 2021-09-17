@@ -45,7 +45,6 @@ export default class PopupControls extends SmartView {
 
     this._data.userDetails.isInWatchlist = !this._data.userDetails.isInWatchlist;
 
-    this.updateElement();
     this._updateCard(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
@@ -58,7 +57,6 @@ export default class PopupControls extends SmartView {
 
     this._data.userDetails.isWatched = !this._data.userDetails.isWatched;
 
-    this.updateElement();
     this._updateCard(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
@@ -71,7 +69,6 @@ export default class PopupControls extends SmartView {
 
     this._data.userDetails.isFavorite = !this._data.userDetails.isFavorite;
 
-    this.updateElement();
     this._updateCard(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,

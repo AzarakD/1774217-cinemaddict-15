@@ -101,10 +101,19 @@ export const getRank = (watchedFilms) => {
   return UserProfileRatings.MOVIE_BUFF;
 };
 
-export const getCurrentDate = () => dayjs();
-
 export const getHoursAndMinutes = (time) => time < 60 ? `${time}m` : dayjs.duration(time, 'm').format('H[h] mm[m]');
 
 export const humanizeDate = (date) => dayjs(date).fromNow();
 
 export const formatDate = (date, format='DD MMMM YYYY') => date ? dayjs(date).format(format) : null;
+
+export const shake = (element, callback, animationTimeout=600) => {
+  element.style.animation = `shake ${animationTimeout / 1000}s`;
+  setTimeout(() => {
+    element.style.animation = '';
+
+    if (callback) {
+      callback();
+    }
+  }, animationTimeout);
+};
