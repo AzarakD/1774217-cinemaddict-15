@@ -3,7 +3,7 @@ import SmartView from './smart.js';
 import { humanizeDate } from '../utils.js';
 import { UserAction, UpdateType } from '../consts.js';
 
-const createNewComment = (element) => (
+const createNewComment = (element, isDeleting, deletingCommentId) => (
   `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
@@ -13,42 +13,42 @@ const createNewComment = (element) => (
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${element.author}</span>
         <span class="film-details__comment-day">${humanizeDate(element.date)}</span>
-        <button class="film-details__comment-delete" data-id="${element.id}">Delete</button>
+        <button class="film-details__comment-delete" data-id="${element.id}" ${isDeleting ? 'disabled' : ''}>${isDeleting && deletingCommentId === element.id ? 'Deleting...' : 'Delete'}</button>
       </p>
     </div>
   </li>`
 );
 
-const createPopupCommentTemplate = ({comments, newCommentEmotion, newCommentMessage}) => (
+const createPopupCommentTemplate = ({comments, newCommentEmotion, newCommentMessage, isAdding, isDeleting, deletingCommentId}) => (
   `<section class="film-details__comments-wrap">
   <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
-  <ul class="film-details__comments-list">${comments.map((element) => createNewComment(element)).join('')}</ul>
+  <ul class="film-details__comments-list">${comments.map((element) => createNewComment(element, isDeleting, deletingCommentId)).join('')}</ul>
 
   <div class="film-details__new-comment">
     <div class="film-details__add-emoji-label">${newCommentEmotion ? `<img src="images/emoji/${newCommentEmotion}.png" width="55" height="55" alt="emoji-${newCommentEmotion}">` : ''}</div>
 
     <label class="film-details__comment-label">
-      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${newCommentMessage ? newCommentMessage : ''}</textarea>
+      <textarea class="film-details__comment-input" placeholder="${isAdding ? 'Sending...' : 'Select reaction below and write comment here'}" name="comment" ${isAdding ? 'disabled' : ''}>${newCommentMessage ? newCommentMessage : ''}</textarea>
     </label>
 
     <div class="film-details__emoji-list">
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${newCommentEmotion === 'smile' ? 'checked' : ''}>
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${isAdding ? 'disabled' : ''} ${newCommentEmotion === 'smile' ? 'checked' : ''}>
       <label class="film-details__emoji-label" for="emoji-smile">
         <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
       </label>
 
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${newCommentEmotion === 'sleeping' ? 'checked' : ''}>
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${isAdding ? 'disabled' : ''} ${newCommentEmotion === 'sleeping' ? 'checked' : ''}>
       <label class="film-details__emoji-label" for="emoji-sleeping">
         <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
       </label>
 
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${newCommentEmotion === 'puke' ? 'checked' : ''}>
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${isAdding ? 'disabled' : ''} ${newCommentEmotion === 'puke' ? 'checked' : ''}>
       <label class="film-details__emoji-label" for="emoji-puke">
         <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
       </label>
 
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${newCommentEmotion === 'angry' ? 'checked' : ''}>
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${isAdding ? 'disabled' : ''} ${newCommentEmotion === 'angry' ? 'checked' : ''}>
       <label class="film-details__emoji-label" for="emoji-angry">
         <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
       </label>
@@ -93,21 +93,13 @@ export default class PopupComment extends SmartView {
 
   _commentDeleteHandler(evt) {
     evt.preventDefault();
-    const commentServerId = evt.target.dataset.id;
-    const commentIndex = this._data.comments.findIndex((comment) => comment.id === commentServerId);
-
-    this._data.comments = [
-      ...this._data.comments.slice(0, commentIndex),
-      ...this._data.comments.slice(commentIndex + 1),
-    ];
-
     this._data = PopupComment.parseDataToFilm(this._data);
 
     this._updateCard(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
       this._data,
-      commentServerId,
+      evt.target.dataset.id,
     );
   }
 
@@ -133,7 +125,6 @@ export default class PopupComment extends SmartView {
           comment: this._data.newCommentMessage,
         };
 
-        this._data.comments.push(this._newComment);
         this._data = PopupComment.parseDataToFilm(this._data);
 
         this._updateCard(
@@ -156,6 +147,9 @@ export default class PopupComment extends SmartView {
       comments: comments,
       newCommentEmotion: null,
       newCommentMessage: null,
+      isAdding: false,
+      isDeleting: false,
+      deletingCommentId: null,
     };
   }
 
@@ -164,6 +158,9 @@ export default class PopupComment extends SmartView {
 
     delete data.newCommentEmotion;
     delete data.newCommentMessage;
+    delete data.isAdding;
+    delete data.isDeleting;
+    delete data.deletingCommentId;
     return data;
   }
 }

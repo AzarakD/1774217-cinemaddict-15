@@ -2,14 +2,12 @@
 import PopupCommentView from '../view/popup-comment.js';
 import PopupControlsView from '../view/popup-controls.js';
 import { render, remove } from '../utils.js';
-import { RenderPosition, UpdateType } from '../consts.js';
+import { RenderPosition, UpdateType, PopupState } from '../consts.js';
 
 export default class FilmPopup {
   constructor(container, changeData) {
     this._filmPopupContainer = container;
     this._changeData = changeData;
-
-    this._profileName = this._profileName = document.querySelector('.profile__rating').textContent;
 
     this._closePopup = this._closePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
@@ -37,7 +35,24 @@ export default class FilmPopup {
     if (updateType === UpdateType.MINOR && this._film.id === data.id) {
       this._popupControlsComponent.updateData(data);
     } else if (updateType === UpdateType.PATCH && this._film.id === data.id) {
-      this._popupCommentComponent.updateData(data);
+      this._popupCommentComponent.updateData({
+        ...data,
+        isAdding: false,
+        isDeleting: false,
+      });
+    }
+  }
+
+  setPopupState(state, commentId) {
+    if (state === PopupState.ADDING) {
+      this._popupCommentComponent.updateData({
+        isAdding: true,
+      });
+    } else if (state === PopupState.DELETING) {
+      this._popupCommentComponent.updateData({
+        isDeleting: true,
+        deletingCommentId: commentId,
+      });
     }
   }
 

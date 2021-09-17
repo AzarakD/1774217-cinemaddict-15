@@ -9,7 +9,7 @@ import ExtraTopRatedView from '../view/extra-top-rated.js';
 import ExtraTopCommentedView from '../view/extra-top-commented.js';
 import LoadingView from '../view/loading.js';
 import { render, remove, SortStrategy, FilterStrategy } from '../utils.js';
-import { RenderPosition, SortType, UserAction, UpdateType, FilterType } from '../consts.js';
+import { RenderPosition, SortType, UserAction, UpdateType, FilterType, PopupState } from '../consts.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
@@ -85,15 +85,23 @@ export default class FilmBoard {
     if (actionType === UserAction.UPDATE_FILM) {
       this._api.updateFilm(update).then((response) => {
         this._filmsModel.updateFilm(updateType, response);
+
+        if (this._filmPopupPresenter) {
+          this._filmPopupPresenter.updatePopup(updateType, update);
+        }
       });
     } else if (actionType === UserAction.ADD_COMMENT) {
+      this._filmPopupPresenter.setPopupState(PopupState.ADDING);
+
       this._api.addComment(update, comment).then((response) => {
         this._filmsModel.addComment(updateType, response);
         this._filmPopupPresenter.updatePopup(updateType, response);
       });
     } else if (actionType === UserAction.DELETE_COMMENT) {
+      this._filmPopupPresenter.setPopupState(PopupState.DELETING, comment);
+
       this._api.deleteComment(comment).then(() => {
-        this._filmsModel.deleteComment(updateType, update);
+        this._filmsModel.deleteComment(updateType, update, comment);
         this._filmPopupPresenter.updatePopup(updateType, update);
       });
     }
@@ -108,9 +116,9 @@ export default class FilmBoard {
     } else if (updateType === UpdateType.MINOR) {
       this._clearFilmBoard();
       this._renderFilmBoard();
-      if (this._filmPopupPresenter) {
-        this._filmPopupPresenter.updatePopup(updateType, data);
-      }
+      // if (this._filmPopupPresenter) {
+      //   this._filmPopupPresenter.updatePopup(updateType, data);
+      // }
     } else if (updateType === UpdateType.MAJOR) {
       this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
       this._renderFilmBoard();

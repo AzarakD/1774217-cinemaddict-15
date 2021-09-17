@@ -51,4 +51,8 @@ export const FilterPeriod = {
   YEAR: 'year',
 };
 
-export const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+export const PopupState = {
+  DEFAULT: 'DEFAULT',
+  ADDING: 'ADDING',
+  DELETING: 'DELETING',
+};
