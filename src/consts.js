@@ -52,7 +52,8 @@ export const FilterPeriod = {
 };
 
 export const PopupState = {
-  DEFAULT: 'DEFAULT',
   ADDING: 'ADDING',
   DELETING: 'DELETING',
+  FORM_ABORTING: 'FORM_ABORTING',
+  COMMENT_ABORTING: 'COMMENT_ABORTING',
 };

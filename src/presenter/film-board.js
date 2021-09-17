@@ -93,17 +93,25 @@ export default class FilmBoard {
     } else if (actionType === UserAction.ADD_COMMENT) {
       this._filmPopupPresenter.setPopupState(PopupState.ADDING);
 
-      this._api.addComment(update, comment).then((response) => {
-        this._filmsModel.addComment(updateType, response);
-        this._filmPopupPresenter.updatePopup(updateType, response);
-      });
+      this._api.addComment(update, comment)
+        .then((response) => {
+          this._filmsModel.addComment(updateType, response);
+          this._filmPopupPresenter.updatePopup(updateType, response);
+        })
+        .catch(() => {
+          this._filmPopupPresenter.setPopupState(PopupState.FORM_ABORTING);
+        });
     } else if (actionType === UserAction.DELETE_COMMENT) {
       this._filmPopupPresenter.setPopupState(PopupState.DELETING, comment);
 
-      this._api.deleteComment(comment).then(() => {
-        this._filmsModel.deleteComment(updateType, update, comment);
-        this._filmPopupPresenter.updatePopup(updateType, update);
-      });
+      this._api.deleteComment(comment)
+        .then(() => {
+          this._filmsModel.deleteComment(updateType, update, comment);
+          this._filmPopupPresenter.updatePopup(updateType, update);
+        })
+        .catch(() => {
+          this._filmPopupPresenter.setPopupState(PopupState.COMMENT_ABORTING, comment);
+        });
     }
   }
 

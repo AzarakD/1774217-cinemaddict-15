@@ -4,7 +4,7 @@ import { humanizeDate } from '../utils.js';
 import { UserAction, UpdateType } from '../consts.js';
 
 const createNewComment = (element, isDeleting, deletingCommentId) => (
-  `<li class="film-details__comment">
+  `<li class="film-details__comment" id="${element.id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
     </span>
@@ -78,6 +78,14 @@ export default class PopupComment extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this._setNewCommentSubmitHandler();
+  }
+
+  getCurrentComment(commentId) {
+    return document.querySelector(`[id='${commentId}']`);
+  }
+
+  getNewCommentForm() {
+    return this.getElement().querySelector('.film-details__new-comment');
   }
 
   _setInnerHandlers() {

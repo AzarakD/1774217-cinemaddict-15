@@ -1,7 +1,7 @@
 ﻿import FilmPopupView from '../view/film-popup.js';
 import PopupCommentView from '../view/popup-comment.js';
 import PopupControlsView from '../view/popup-controls.js';
-import { render, remove } from '../utils.js';
+import { render, remove, shake } from '../utils.js';
 import { RenderPosition, UpdateType, PopupState } from '../consts.js';
 
 export default class FilmPopup {
@@ -11,6 +11,7 @@ export default class FilmPopup {
 
     this._closePopup = this._closePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._resetPopupState = this._resetPopupState.bind(this);
   }
 
   init(film, comments) {
@@ -39,6 +40,7 @@ export default class FilmPopup {
         ...data,
         isAdding: false,
         isDeleting: false,
+        deletingCommentId: null,
       });
     }
   }
@@ -53,7 +55,19 @@ export default class FilmPopup {
         isDeleting: true,
         deletingCommentId: commentId,
       });
+    } else if (state === PopupState.FORM_ABORTING) {
+      shake(this._popupCommentComponent.getNewCommentForm(), this._resetPopupState);
+    } else if (state === PopupState.COMMENT_ABORTING) {
+      shake(this._popupCommentComponent.getCurrentComment(commentId), this._resetPopupState);
     }
+  }
+
+  _resetPopupState() {
+    this._popupCommentComponent.updateData({
+      isAdding: false,
+      isDeleting: false,
+      deletingCommentId: null,
+    });
   }
 
   _renderPopup() {
