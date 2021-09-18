@@ -83,35 +83,25 @@ export default class FilmBoard {
 
   _handleViewAction(actionType, updateType, update, comment) {
     if (actionType === UserAction.UPDATE_FILM) {
-      this._api.updateFilm(update).then((response) => {
-        this._filmsModel.updateFilm(updateType, response);
-
-        if (this._filmPopupPresenter) {
-          this._filmPopupPresenter.updatePopup(updateType, update);
-        }
-      });
+      this._filmsModel.updateFilm(updateType, update)
+        .then((response) => {
+          if (this._filmPopupPresenter) {
+            this._filmPopupPresenter.updatePopup(updateType, response);
+          }
+        });
     } else if (actionType === UserAction.ADD_COMMENT) {
       this._filmPopupPresenter.setPopupState(PopupState.ADDING);
 
-      this._api.addComment(update, comment)
-        .then((response) => {
-          this._filmsModel.addComment(updateType, response);
-          this._filmPopupPresenter.updatePopup(updateType, response);
-        })
-        .catch(() => {
-          this._filmPopupPresenter.setPopupState(PopupState.FORM_ABORTING);
-        });
+      this._filmsModel.addComment(updateType, update, comment)
+        .then((response) => this._filmPopupPresenter.updatePopup(updateType, response))
+        .catch(() => this._filmPopupPresenter.setPopupState(PopupState.FORM_ABORTING));
+
     } else if (actionType === UserAction.DELETE_COMMENT) {
       this._filmPopupPresenter.setPopupState(PopupState.DELETING, comment);
 
-      this._api.deleteComment(comment)
-        .then(() => {
-          this._filmsModel.deleteComment(updateType, update, comment);
-          this._filmPopupPresenter.updatePopup(updateType, update);
-        })
-        .catch(() => {
-          this._filmPopupPresenter.setPopupState(PopupState.COMMENT_ABORTING, comment);
-        });
+      this._filmsModel.deleteComment(updateType, update, comment)
+        .then((response) => this._filmPopupPresenter.updatePopup(updateType, response))
+        .catch(() => this._filmPopupPresenter.setPopupState(PopupState.COMMENT_ABORTING, comment));
     }
   }
 
@@ -124,12 +114,11 @@ export default class FilmBoard {
     } else if (updateType === UpdateType.MINOR) {
       this._clearFilmBoard();
       this._renderFilmBoard();
-      // if (this._filmPopupPresenter) {
-      //   this._filmPopupPresenter.updatePopup(updateType, data);
-      // }
+
     } else if (updateType === UpdateType.MAJOR) {
       this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
       this._renderFilmBoard();
+
     } else if (updateType === UpdateType.INIT) {
       this._isLoading = false;
       remove(this._loadingComponent);

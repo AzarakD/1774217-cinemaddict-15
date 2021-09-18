@@ -14,7 +14,7 @@ const AUTHORIZATION = 'Basic BBziUcTOvPtL7Qy';
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
-const filmsModel = new FilmsModel();
+const filmsModel = new FilmsModel(api);
 const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.header');
