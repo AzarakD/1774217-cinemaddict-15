@@ -7,7 +7,7 @@ import FilterMenuPresenter from './presenter/filter-menu.js';
 import FilmBoardPresenter from './presenter/film-board.js';
 import { remove, render } from './utils.js';
 import { RenderPosition, PageState, UpdateType } from './consts.js';
-import Api from './api.js';
+import Api from './api/api.js';
 
 const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 const AUTHORIZATION = 'Basic BBziUcTOvPtL7Qy';
