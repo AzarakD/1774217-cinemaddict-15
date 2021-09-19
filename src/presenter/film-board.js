@@ -14,14 +14,13 @@ import { RenderPosition, SortType, UserAction, UpdateType, FilterType, PopupStat
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmBoard {
-  constructor(container, filmsModel, filterModel, api) {
+  constructor(container, filmsModel, filterModel) {
     this._filmBoardContainer = container;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filterType = FilterType.ALL;
-    this._api = api;
     this._isLoading = true;
 
     this._filmPresenterMap = new Map();
@@ -222,7 +221,7 @@ export default class FilmBoard {
       this._filmPopupPresenter.destroy();
     }
 
-    this._api.getComments(film.id)
+    this._filmsModel.getComments(film.id)
       .then((comments) => {
         this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
         this._filmPopupPresenter.init(presenterMap.get(film.id).film, comments);

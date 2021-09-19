@@ -22,7 +22,7 @@ const siteMainElement = document.querySelector('.main');
 const footerStatistic = document.querySelector('.footer__statistics');
 
 const filterMenuPresenter = new FilterMenuPresenter(siteMainElement, filmsModel, filterModel);
-const filmBoardPresenter = new FilmBoardPresenter(siteMainElement, filmsModel, filterModel, api);
+const filmBoardPresenter = new FilmBoardPresenter(siteMainElement, filmsModel, filterModel);
 const filmCounterComponent = new FilmCounterView(filmsModel.getFilms());
 let statsComponent = null;
 

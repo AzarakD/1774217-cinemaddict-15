@@ -17,6 +17,10 @@ export default class Films extends AbstractObserver {
     return this._films;
   }
 
+  getComments(filmId) {
+    return this._api.getComments(filmId);
+  }
+
   _findIndexById(element) {
     return this._films.findIndex((elem) => elem.id === element.id);
   }
