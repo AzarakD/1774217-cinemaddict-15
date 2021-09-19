@@ -1,4 +1,4 @@
-﻿import { UserProfileRatings } from '../consts.js';
+﻿import { UserProfileRating } from '../consts.js';
 import Abstract from '../view/abstract.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
@@ -73,12 +73,12 @@ export const getRank = (watchedFilms) => {
   if (watchedFilmsCount < 1) {
     return '';
   } else if (watchedFilmsCount < 11) {
-    return UserProfileRatings.NOVICE;
+    return UserProfileRating.NOVICE;
   } else if (watchedFilmsCount < 21) {
-    return UserProfileRatings.FAN;
+    return UserProfileRating.FAN;
   }
 
-  return UserProfileRatings.MOVIE_BUFF;
+  return UserProfileRating.MOVIE_BUFF;
 };
 
 export const getHoursAndMinutes = (time) => time < 60 ? `${time}m` : dayjs.duration(time, 'm').format('H[h] mm[m]');
@@ -97,3 +97,5 @@ export const shake = (element, callback, animationTimeout=600) => {
     }
   }, animationTimeout);
 };
+
+export const isOnline = () => window.navigator.onLine;

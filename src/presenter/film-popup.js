@@ -35,9 +35,12 @@ export default class FilmPopup {
   updatePopup(updateType, data) {
     if (updateType === UpdateType.MINOR && this._film.id === data.id) {
       this._popupControlsComponent.updateData(data);
-      this._popupCommentComponent.updateData({
-        userDetails: {...data.userDetails},
-      }, true);
+
+      if (this._popupCommentComponent) {
+        this._popupCommentComponent.updateData({
+          userDetails: {...data.userDetails},
+        }, true);
+      }
     } else if (updateType === UpdateType.PATCH && this._film.id === data.id) {
       this._popupCommentComponent.updateData({
         ...data,

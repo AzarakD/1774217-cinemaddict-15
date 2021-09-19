@@ -5,6 +5,7 @@ import StatsView from './view/stats.js';
 import FilmCounterView from './view/film-counter.js';
 import FilterMenuPresenter from './presenter/filter-menu.js';
 import FilmBoardPresenter from './presenter/film-board.js';
+import { toast, removeToast } from './utils/toast.js';
 import { remove, render } from './utils/utils.js';
 import { RenderPosition, PageState, UpdateType } from './consts.js';
 import Api from './api/api.js';
@@ -68,4 +69,18 @@ apiWithProvider.getFilms()
 
 window.addEventListener('load', () => {
   navigator.serviceWorker.register('/sw.js');
+});
+
+window.addEventListener('online', () => {
+  document.title = document.title.replace(' [offline]', '');
+  removeToast();
+
+  if (apiWithProvider.isSyncNeeded) {
+    apiWithProvider.sync();
+  }
+});
+
+window.addEventListener('offline', () => {
+  document.title += ' [offline]';
+  toast('You are in offline mode');
 });

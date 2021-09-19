@@ -1,4 +1,10 @@
 ﻿import FilmsModel from '../model/films.js';
+import { isOnline } from '../utils/utils.js';
+
+const StoreKey = {
+  FILMS: 'films',
+  COMMENTS: 'comments',
+};
 
 const createStoreStructure = (items) =>
   items
@@ -10,61 +16,70 @@ export default class Provider {
   constructor(api, store) {
     this._api = api;
     this._store = store;
+    this._isSyncNeeded = false;
+    this._filmsToSync = new Map();
+  }
+
+  get isSyncNeeded() {
+    return this._isSyncNeeded;
   }
 
   getFilms() {
-    if (this._isOnline()) {
+    if (isOnline()) {
       return this._api.getFilms()
         .then((films) => {
           const items = createStoreStructure(films.map(FilmsModel.adaptToServer));
-          this._store.setItem('films', items);
+          this._store.setItem(StoreKey.FILMS, items);
 
           return films;
         });
     }
 
-    const storeFilms = Object.values(this._store.getItems()['films']);
+    const storeFilms = Object.values(this._store.getItems()[StoreKey.FILMS]);
 
     return Promise.resolve(storeFilms.map(FilmsModel.adaptToClient));
   }
 
   getComments(filmId) {
-    if (this._isOnline()) {
+    if (isOnline()) {
       return this._api.getComments(filmId)
         .then((comments) => {
           const item = {[filmId]: createStoreStructure(comments)};
-          this._store.setItem('comments', item);
+          this._store.setItem(StoreKey.COMMENTS, item);
 
           return comments;
         });
     }
 
-    const storeComments = this._store.getItems()['comments'][filmId];
+    const storeComments = this._store.getItems()[StoreKey.COMMENTS][filmId];
 
     return Promise.resolve(storeComments ? Object.values(storeComments) : null);
   }
 
   updateFilm(film) {
-    if (this._isOnline()) {
+    if (isOnline()) {
       return this._api.updateFilm(film)
         .then((updatedFilm) => {
-          this._store.setItem('films', {[updatedFilm.id]: FilmsModel.adaptToServer(updatedFilm)});
+          this._store.setItem(StoreKey.FILMS, {[updatedFilm.id]: FilmsModel.adaptToServer(updatedFilm)});
 
           return updatedFilm;
         });
     }
+    this._isSyncNeeded = true;
+    const filmToSync = FilmsModel.adaptToServer(film);
 
-    this._store.setItem(this._store.setItem('films', {[film.id]: FilmsModel.adaptToServer(film)}));
+    this._filmsToSync.set(film.id, filmToSync);
+    this._store.setItem(StoreKey.FILMS, {[film.id]: filmToSync});
 
     return Promise.resolve(film);
   }
 
   addComment(film, commentId) {
-    if (this._isOnline()) {
+    if (isOnline()) {
       return this._api.addComment(film, commentId)
         .then((response) => {
           const comments = {[film.id]: createStoreStructure(response.detailedComments)};
-          this._store.setItem('comments', comments);
+          this._store.setItem(StoreKey.COMMENTS, comments);
 
           return response;
         });
@@ -74,15 +89,30 @@ export default class Provider {
   }
 
   deleteComment(filmId, commentId) {
-    if (this._isOnline()) {
+    if (isOnline()) {
       return this._api.deleteComment(commentId)
-        .then(() => this._store.removeItem('comments', filmId, commentId));
+        .then(() => this._store.removeItem(StoreKey.COMMENTS, filmId, commentId));
     }
 
     return Promise.reject(new Error('Failed to delete a comment'));
   }
 
-  _isOnline() {
-    return window.navigator.onLine;
+  sync() {
+    if (isOnline()) {
+      const filmsToSync = [...this._filmsToSync.values()];
+
+      return this._api.sync(filmsToSync)
+        .then((response) => {
+          const updatedFilms = response.updated;
+          const items = createStoreStructure(updatedFilms);
+
+          this._filmsToSync.clear();
+          this._store.setItem(StoreKey.FILMS, items);
+
+          this._isSyncNeeded = false;
+        });
+    }
+
+    return Promise.reject(new Error('Failed to sync data'));
   }
 }

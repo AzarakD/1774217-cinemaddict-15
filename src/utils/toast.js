@@ -1,17 +1,13 @@
-﻿const SHOW_TIME = 5000;
-
-const toastContainer = document.createElement('div');
-toastContainer.classList.add('toast-container');
-document.body.append(toastContainer);
-
-export const toast = (message) => {
+﻿export const toast = (message) => {
+  const toastContainer = document.createElement('div');
   const toastItem = document.createElement('div');
+
   toastItem.textContent = message;
+  toastContainer.classList.add('toast-container');
   toastItem.classList.add('toast-item');
 
+  document.body.append(toastContainer);
   toastContainer.append(toastItem);
-
-  setTimeout(() => {
-    toastItem.remove();
-  }, SHOW_TIME);
 };
+
+export const removeToast = () => document.querySelector('.toast-container').remove();
