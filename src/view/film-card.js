@@ -1,5 +1,5 @@
 ﻿import AbstractView from './abstract.js';
-import { getHoursAndMinutes, formatDate } from '../utils.js';
+import { getHoursAndMinutes, formatDate } from '../utils/utils.js';
 
 const createFilmCardTemplate = ({filmInfo, comments, userDetails}) => (
   `<article class="film-card">

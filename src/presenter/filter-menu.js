@@ -1,5 +1,6 @@
 ﻿import SiteMenuView from '../view/site-menu.js';
-import { render, remove, replace, FilterStrategy } from '../utils';
+import { render, remove, replace } from '../utils/utils';
+import { FilterStrategy } from '../utils/strategies.js';
 import { RenderPosition, FilterType, UpdateType, PageState } from '../consts';
 import { handleSiteMenuClick } from '../main.js';
 

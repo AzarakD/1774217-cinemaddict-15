@@ -8,7 +8,8 @@ import ShowMoreButtonView from '../view/show-more-button.js';
 import ExtraTopRatedView from '../view/extra-top-rated.js';
 import ExtraTopCommentedView from '../view/extra-top-commented.js';
 import LoadingView from '../view/loading.js';
-import { render, remove, SortStrategy, FilterStrategy } from '../utils.js';
+import { render, remove } from '../utils/utils.js';
+import { SortStrategy, FilterStrategy } from '../utils/strategies.js';
 import { RenderPosition, SortType, UserAction, UpdateType, FilterType, PopupState } from '../consts.js';
 
 const FILM_COUNT_PER_STEP = 5;

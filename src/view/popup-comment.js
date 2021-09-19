@@ -1,6 +1,6 @@
 ﻿import he from 'he';
 import SmartView from './smart.js';
-import { humanizeDate } from '../utils.js';
+import { humanizeDate } from '../utils/utils.js';
 import { UserAction, UpdateType } from '../consts.js';
 
 const createNewComment = (element, isDeleting, deletingCommentId) => (

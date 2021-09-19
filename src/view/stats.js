@@ -1,6 +1,7 @@
 ﻿import SmartView from './smart.js';
+import { getWatchedFilms, getRank } from '../utils/utils.js';
+import { PeriodStrategy } from '../utils/strategies.js';
 import { FilterPeriod } from '../consts.js';
-import { PeriodStrategy, getWatchedFilms, getRank } from '../utils.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import dayjs from 'dayjs';
