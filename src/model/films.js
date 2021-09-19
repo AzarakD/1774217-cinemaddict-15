@@ -60,7 +60,7 @@ export default class Films extends AbstractObserver {
   }
 
   deleteComment(updateType, updatedFilm, commentId) {
-    return this._api.deleteComment(commentId).then(() => {
+    return this._api.deleteComment(updatedFilm.id, commentId).then(() => {
       const filmIndex = this._findIndexById(updatedFilm);
 
       if (filmIndex === -1) {

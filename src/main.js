@@ -8,13 +8,19 @@ import FilmBoardPresenter from './presenter/film-board.js';
 import { remove, render } from './utils.js';
 import { RenderPosition, PageState, UpdateType } from './consts.js';
 import Api from './api/api.js';
+import Store from './api/store.js';
+import Provider from './api/provider.js';
 
 const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 const AUTHORIZATION = 'Basic BBziUcTOvPtL7Qy';
+const STORE_PREFIX = 'cinemaddict-localstorage';
+const STORE_VER = 'v1';
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
-
-const filmsModel = new FilmsModel(api);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
+const filmsModel = new FilmsModel(apiWithProvider);
 const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.header');
@@ -50,7 +56,7 @@ filmBoardPresenter.init();
 
 render(footerStatistic, filmCounterComponent, RenderPosition.BEFOREEND);
 
-api.getFilms()
+apiWithProvider.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
     render(siteHeaderElement, new UserProfileView(films), RenderPosition.BEFOREEND);

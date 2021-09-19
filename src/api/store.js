@@ -12,30 +12,29 @@
     }
   }
 
-  setItems(items) {
-    this._storage.setItem(
-      this._storeKey,
-      JSON.stringify(items),
-    );
-  }
+  // setItems(key, items) {
+  //   this._storage.setItem(
+  //     this._storeKey,
+  //     JSON.stringify(items),
+  //   );
+  // }
 
   setItem(key, value) {
     const store = this.getItems();
+    const subStore = {
+      [key] : {...store[key], ...value},
+    };
 
     this._storage.setItem(
       this._storeKey,
-      JSON.stringify(
-        Object.assign({}, store, {
-          [key]: value,
-        }),
-      ),
+      JSON.stringify({...store, ...subStore}),
     );
   }
 
-  removeItem(key) {
+  removeItem(storageKey, itemKey, itemId) {
     const store = this.getItems();
 
-    delete store[key];
+    delete store[storageKey][itemKey][itemId];
 
     this._storage.setItem(
       this._storeKey,
