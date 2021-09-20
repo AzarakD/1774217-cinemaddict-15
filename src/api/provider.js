@@ -51,9 +51,14 @@ export default class Provider {
         });
     }
 
-    const storeComments = this._store.getItems()[StoreKey.COMMENTS][filmId];
+    const subStore = this._store.getItems()[StoreKey.COMMENTS];
 
-    return Promise.resolve(storeComments ? Object.values(storeComments) : null);
+    if (!subStore || !subStore[filmId]) {
+      return Promise.reject(new Error('Failed to get comments'));
+    }
+
+    const storeComments = subStore[filmId];
+    return Promise.resolve(Object.values(storeComments));
   }
 
   updateFilm(film) {

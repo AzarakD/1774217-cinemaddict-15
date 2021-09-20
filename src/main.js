@@ -6,7 +6,7 @@ import FilmCounterView from './view/film-counter.js';
 import FilterMenuPresenter from './presenter/filter-menu.js';
 import FilmBoardPresenter from './presenter/film-board.js';
 import { toast, removeToast } from './utils/toast.js';
-import { remove, render } from './utils/utils.js';
+import { isOnline, remove, render } from './utils/utils.js';
 import { RenderPosition, PageState, UpdateType } from './consts.js';
 import Api from './api/api.js';
 import Store from './api/store.js';
@@ -56,6 +56,10 @@ filterMenuPresenter.init();
 filmBoardPresenter.init();
 
 render(footerStatistic, filmCounterComponent, RenderPosition.BEFOREEND);
+
+if (!isOnline()) {
+  toast('You are in offline mode');
+}
 
 apiWithProvider.getFilms()
   .then((films) => {
