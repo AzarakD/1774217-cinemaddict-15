@@ -37,7 +37,7 @@ export const PageState = {
   STATS: 'STATS',
 };
 
-export const UserProfileRatings = {
+export const UserProfileRating = {
   NOVICE: 'Novice',
   FAN: 'Fan',
   MOVIE_BUFF: 'Movie Buff',

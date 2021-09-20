@@ -1,7 +1,7 @@
 ﻿import FilmPopupView from '../view/film-popup.js';
 import PopupCommentView from '../view/popup-comment.js';
 import PopupControlsView from '../view/popup-controls.js';
-import { render, remove, shake } from '../utils.js';
+import { render, remove, shake } from '../utils/utils.js';
 import { RenderPosition, UpdateType, PopupState } from '../consts.js';
 
 export default class FilmPopup {
@@ -35,6 +35,12 @@ export default class FilmPopup {
   updatePopup(updateType, data) {
     if (updateType === UpdateType.MINOR && this._film.id === data.id) {
       this._popupControlsComponent.updateData(data);
+
+      if (this._popupCommentComponent) {
+        this._popupCommentComponent.updateData({
+          userDetails: {...data.userDetails},
+        }, true);
+      }
     } else if (updateType === UpdateType.PATCH && this._film.id === data.id) {
       this._popupCommentComponent.updateData({
         ...data,

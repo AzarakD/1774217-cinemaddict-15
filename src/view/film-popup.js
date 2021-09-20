@@ -1,5 +1,5 @@
 ﻿import AbstractView from './abstract.js';
-import { getHoursAndMinutes, formatDate } from '../utils.js';
+import { getHoursAndMinutes, formatDate } from '../utils/utils.js';
 
 const createFilmPopupTemplate = ({filmInfo}, comments) => {
   const genres = filmInfo.genres.map((element) => `<span class="film-details__genre">${element}</span>`);

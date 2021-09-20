@@ -1,8 +1,9 @@
 ﻿import AbstractObserver from './abstract-observer.js';
 
 export default class Films extends AbstractObserver {
-  constructor() {
+  constructor(api) {
     super();
+    this._api = api;
     this._films = [];
   }
 
@@ -16,60 +17,80 @@ export default class Films extends AbstractObserver {
     return this._films;
   }
 
+  getComments(filmId) {
+    return this._api.getComments(filmId);
+  }
+
   _findIndexById(element) {
     return this._films.findIndex((elem) => elem.id === element.id);
   }
 
   updateFilm(updateType, update) {
-    const index = this._findIndexById(update);
+    return this._api.updateFilm(update).then((response) => {
+      const index = this._findIndexById(response);
 
-    if (index === -1) {
-      throw new Error('Can\'t update unexisting film');
-    }
+      if (index === -1) {
+        throw new Error('Can\'t update unexisting film');
+      }
 
-    this._films = [
-      ...this._films.slice(0, index),
-      update,
-      ...this._films.slice(index + 1),
-    ];
+      this._films = [
+        ...this._films.slice(0, index),
+        response,
+        ...this._films.slice(index + 1),
+      ];
 
-    this._notify(updateType, update);
+      this._notify(updateType, response);
+
+      return response;
+    });
   }
 
-  addComment(updateType, updatedFilm) {
-    const filmIndex = this._findIndexById(updatedFilm);
+  addComment(updateType, updatedFilm, comment) {
+    return this._api.addComment(updatedFilm, comment).then((response) => {
+      const filmIndex = this._findIndexById(response);
 
-    if (filmIndex === -1) {
-      throw new Error('Can\'t add comment to unexisting film');
-    }
+      if (filmIndex === -1) {
+        throw new Error('Can\'t add comment to unexisting film');
+      }
+      this._films[filmIndex] = response;
+      this._notify(updateType, response);
 
-    this._films[filmIndex] = updatedFilm;
-
-    this._notify(updateType, updatedFilm);
+      return response;
+    });
   }
 
   deleteComment(updateType, updatedFilm, commentId) {
-    const filmIndex = this._findIndexById(updatedFilm);
+    return this._api.deleteComment(updatedFilm.id, commentId).then(() => {
+      const filmIndex = this._findIndexById(updatedFilm);
 
-    if (filmIndex === -1) {
-      throw new Error('Can\'t delete comment of unexisting film');
-    }
-    const commentIndex = updatedFilm.comments.findIndex((comment) => comment.id === commentId);
+      if (filmIndex === -1) {
+        throw new Error('Can\'t delete comment of unexisting film');
+      }
+      const commentIndex = updatedFilm.comments.findIndex((comment) => comment === commentId);
+      const detailedCommentIndex = updatedFilm.detailedComments.findIndex((comment) => comment.id === commentId);
 
-    updatedFilm.comments = [
-      ...updatedFilm.comments.slice(0, commentIndex),
-      ...updatedFilm.comments.slice(commentIndex + 1),
-    ];
+      updatedFilm.comments = [
+        ...updatedFilm.comments.slice(0, commentIndex),
+        ...updatedFilm.comments.slice(commentIndex + 1),
+      ];
 
-    this._films[filmIndex].comments = [...updatedFilm.comments];
+      updatedFilm.detailedComments = [
+        ...updatedFilm.detailedComments.slice(0, detailedCommentIndex),
+        ...updatedFilm.detailedComments.slice(detailedCommentIndex + 1),
+      ];
 
-    this._notify(updateType, updatedFilm);
+      this._films[filmIndex].comments = [...updatedFilm.comments];
+      this._notify(updateType, updatedFilm);
+
+      return updatedFilm;
+    });
   }
 
   static adaptToClient(film) {
     return {
       id: film.id,
       comments: film.comments,
+      detailedComments: film.detailedComments ? film.detailedComments : [],
       filmInfo: {
         poster: film.film_info.poster,
         title: film.film_info.title,

@@ -8,20 +8,20 @@ import ShowMoreButtonView from '../view/show-more-button.js';
 import ExtraTopRatedView from '../view/extra-top-rated.js';
 import ExtraTopCommentedView from '../view/extra-top-commented.js';
 import LoadingView from '../view/loading.js';
-import { render, remove, SortStrategy, FilterStrategy } from '../utils.js';
+import { render, remove } from '../utils/utils.js';
+import { SortStrategy, FilterStrategy } from '../utils/strategies.js';
 import { RenderPosition, SortType, UserAction, UpdateType, FilterType, PopupState } from '../consts.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmBoard {
-  constructor(container, filmsModel, filterModel, api) {
+  constructor(container, filmsModel, filterModel) {
     this._filmBoardContainer = container;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filterType = FilterType.ALL;
-    this._api = api;
     this._isLoading = true;
 
     this._filmPresenterMap = new Map();
@@ -83,35 +83,25 @@ export default class FilmBoard {
 
   _handleViewAction(actionType, updateType, update, comment) {
     if (actionType === UserAction.UPDATE_FILM) {
-      this._api.updateFilm(update).then((response) => {
-        this._filmsModel.updateFilm(updateType, response);
-
-        if (this._filmPopupPresenter) {
-          this._filmPopupPresenter.updatePopup(updateType, update);
-        }
-      });
+      this._filmsModel.updateFilm(updateType, update)
+        .then((response) => {
+          if (this._filmPopupPresenter) {
+            this._filmPopupPresenter.updatePopup(updateType, response);
+          }
+        });
     } else if (actionType === UserAction.ADD_COMMENT) {
       this._filmPopupPresenter.setPopupState(PopupState.ADDING);
 
-      this._api.addComment(update, comment)
-        .then((response) => {
-          this._filmsModel.addComment(updateType, response);
-          this._filmPopupPresenter.updatePopup(updateType, response);
-        })
-        .catch(() => {
-          this._filmPopupPresenter.setPopupState(PopupState.FORM_ABORTING);
-        });
+      this._filmsModel.addComment(updateType, update, comment)
+        .then((response) => this._filmPopupPresenter.updatePopup(updateType, response))
+        .catch(() => this._filmPopupPresenter.setPopupState(PopupState.FORM_ABORTING));
+
     } else if (actionType === UserAction.DELETE_COMMENT) {
       this._filmPopupPresenter.setPopupState(PopupState.DELETING, comment);
 
-      this._api.deleteComment(comment)
-        .then(() => {
-          this._filmsModel.deleteComment(updateType, update, comment);
-          this._filmPopupPresenter.updatePopup(updateType, update);
-        })
-        .catch(() => {
-          this._filmPopupPresenter.setPopupState(PopupState.COMMENT_ABORTING, comment);
-        });
+      this._filmsModel.deleteComment(updateType, update, comment)
+        .then((response) => this._filmPopupPresenter.updatePopup(updateType, response))
+        .catch(() => this._filmPopupPresenter.setPopupState(PopupState.COMMENT_ABORTING, comment));
     }
   }
 
@@ -124,12 +114,11 @@ export default class FilmBoard {
     } else if (updateType === UpdateType.MINOR) {
       this._clearFilmBoard();
       this._renderFilmBoard();
-      // if (this._filmPopupPresenter) {
-      //   this._filmPopupPresenter.updatePopup(updateType, data);
-      // }
+
     } else if (updateType === UpdateType.MAJOR) {
       this._clearFilmBoard({resetRenderedFilmCount: true, resetSortType: true});
       this._renderFilmBoard();
+
     } else if (updateType === UpdateType.INIT) {
       this._isLoading = false;
       remove(this._loadingComponent);
@@ -233,7 +222,7 @@ export default class FilmBoard {
       this._filmPopupPresenter.destroy();
     }
 
-    this._api.getComments(film.id)
+    this._filmsModel.getComments(film.id)
       .then((comments) => {
         this._filmPopupPresenter = new FilmPopupPresenter(this._filmPopupContainer, this._handleViewAction);
         this._filmPopupPresenter.init(presenterMap.get(film.id).film, comments);

@@ -1,5 +1,5 @@
 ﻿import FilmCardView from '../view/film-card.js';
-import { render, replace, remove } from '../utils.js';
+import { render, replace, remove } from '../utils/utils.js';
 import { RenderPosition, UserAction, UpdateType } from '../consts.js';
 
 export default class Film {

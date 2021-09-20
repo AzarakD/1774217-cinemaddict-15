@@ -1,6 +1,6 @@
 ﻿import he from 'he';
 import SmartView from './smart.js';
-import { humanizeDate } from '../utils.js';
+import { humanizeDate } from '../utils/utils.js';
 import { UserAction, UpdateType } from '../consts.js';
 
 const createNewComment = (element, isDeleting, deletingCommentId) => (
@@ -19,11 +19,11 @@ const createNewComment = (element, isDeleting, deletingCommentId) => (
   </li>`
 );
 
-const createPopupCommentTemplate = ({comments, newCommentEmotion, newCommentMessage, isAdding, isDeleting, deletingCommentId}) => (
+const createPopupCommentTemplate = ({detailedComments, newCommentEmotion, newCommentMessage, isAdding, isDeleting, deletingCommentId}) => (
   `<section class="film-details__comments-wrap">
-  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${detailedComments.length}</span></h3>
 
-  <ul class="film-details__comments-list">${comments.map((element) => createNewComment(element, isDeleting, deletingCommentId)).join('')}</ul>
+  <ul class="film-details__comments-list">${detailedComments.map((element) => createNewComment(element, isDeleting, deletingCommentId)).join('')}</ul>
 
   <div class="film-details__new-comment">
     <div class="film-details__add-emoji-label">${newCommentEmotion ? `<img src="images/emoji/${newCommentEmotion}.png" width="55" height="55" alt="emoji-${newCommentEmotion}">` : ''}</div>
@@ -152,7 +152,7 @@ export default class PopupComment extends SmartView {
   static parseFilmToData(film, comments) {
     return {
       ...film,
-      comments: comments,
+      detailedComments: comments,
       newCommentEmotion: null,
       newCommentMessage: null,
       isAdding: false,
