@@ -111,6 +111,8 @@ export default class FilmBoard {
         const film = presenterMap.get(data.id);
         return film && film.init(data);
       });
+      this._updateTopCommentedFilms();
+
     } else if (updateType === UpdateType.MINOR) {
       this._clearFilmBoard();
       this._renderFilmBoard();
@@ -167,6 +169,9 @@ export default class FilmBoard {
 
     if (this._extraTopRatedComponent) {
       remove(this._extraTopRatedComponent);
+    }
+
+    if (this._extraTopCommentedComponent) {
       remove(this._extraTopCommentedComponent);
     }
 
@@ -270,24 +275,52 @@ export default class FilmBoard {
   _renderExtra() {
     const films = this._films.slice();
 
-    this._extraTopRatedComponent = new ExtraTopRatedView();
-    this._extraTopCommentedComponent = new ExtraTopCommentedView();
-    const extraTopRatedContainer = this._extraTopRatedComponent.getExtraContainer();
-    const extraTopCommentedContainer = this._extraTopCommentedComponent.getExtraContainer();
     const sortByRating = SortStrategy[SortType.BY_RATING];
     const sortByCommentAmount = SortStrategy[SortType.BY_COMMENT_AMOUNT];
 
+    const filmsSortedByRating = films.sort(sortByRating).slice(0, 2);
+    const filmsSortedByCommentAmount = films.sort(sortByCommentAmount).slice(0, 2);
+
+    if (filmsSortedByRating[0].filmInfo.rating > 0) {
+      this._renderTopRatedFilms(filmsSortedByRating);
+    }
+
+    if (filmsSortedByCommentAmount[0].comments.length > 0) {
+      this._renderTopCommentedFilms(filmsSortedByCommentAmount);
+    }
+  }
+
+  _renderTopRatedFilms(films) {
+    this._extraTopRatedComponent = new ExtraTopRatedView();
+    const extraTopRatedContainer = this._extraTopRatedComponent.getExtraContainer();
+
     render(this._filmBoardComponent, this._extraTopRatedComponent, RenderPosition.BEFOREEND);
+
+    films.forEach((film) => this._renderFilm(extraTopRatedContainer, film, this._extraTopRatedPresenterMap));
+  }
+
+  _renderTopCommentedFilms(films) {
+    this._extraTopCommentedComponent = new ExtraTopCommentedView();
+    const extraTopCommentedContainer = this._extraTopCommentedComponent.getExtraContainer();
+
     render(this._filmBoardComponent, this._extraTopCommentedComponent, RenderPosition.BEFOREEND);
 
-    if (films.length > 1) {
-      this._renderFilm(extraTopRatedContainer, films.sort(sortByRating)[0], this._extraTopRatedPresenterMap);
-      this._renderFilm(extraTopRatedContainer, films.sort(sortByRating)[1], this._extraTopRatedPresenterMap);
-      this._renderFilm(extraTopCommentedContainer, films.sort(sortByCommentAmount)[0], this._extraTopCommentedPresenterMap);
-      this._renderFilm(extraTopCommentedContainer, films.sort(sortByCommentAmount)[1], this._extraTopCommentedPresenterMap);
-    } else if (films.length === 1) {
-      this._renderFilm(extraTopRatedContainer, films[0], this._extraTopRatedPresenterMap);
-      this._renderFilm(extraTopCommentedContainer, films[0], this._extraTopCommentedPresenterMap);
+    films.forEach((film) => this._renderFilm(extraTopCommentedContainer, film, this._extraTopCommentedPresenterMap));
+  }
+
+  _updateTopCommentedFilms() {
+    if (!this._extraTopCommentedComponent) {
+      return;
+    }
+    const films = this._getFilms().slice();
+
+    const sortByCommentAmount = SortStrategy[SortType.BY_COMMENT_AMOUNT];
+    const filmsSortedByCommentAmount = films.sort(sortByCommentAmount).slice(0, 2);
+
+    remove(this._extraTopCommentedComponent);
+
+    if (filmsSortedByCommentAmount[0].comments.length > 0) {
+      this._renderTopCommentedFilms(filmsSortedByCommentAmount);
     }
   }
 }

@@ -1,5 +1,5 @@
 ﻿import AbstractView from './abstract.js';
-import { getWatchedFilms, getRank } from '../utils/utils.js';
+import { getRank } from '../utils/utils.js';
 
 const createUserProfileTemplate = (films) => (
   `<section class="header__profile profile">
@@ -11,7 +11,7 @@ const createUserProfileTemplate = (films) => (
 export default class UserProfile extends AbstractView {
   constructor(films) {
     super();
-    this._films = getWatchedFilms(films);
+    this._films = films;
   }
 
   getTemplate() {
