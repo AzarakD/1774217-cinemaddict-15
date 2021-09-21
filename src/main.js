@@ -1,10 +1,10 @@
 import FilmsModel from './model/films.js';
 import FilterModel from './model/filter.js';
-import UserProfileView from './view/user-profile.js';
 import StatsView from './view/stats.js';
 import FilmCounterView from './view/film-counter.js';
 import FilterMenuPresenter from './presenter/filter-menu.js';
 import FilmBoardPresenter from './presenter/film-board.js';
+import UserProfilePresenter from './presenter/user-profile.js';
 import { toast, removeToast } from './utils/toast.js';
 import { isOnline, remove, render } from './utils/utils.js';
 import { RenderPosition, PageState, UpdateType } from './consts.js';
@@ -64,7 +64,9 @@ if (!isOnline()) {
 apiWithProvider.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
-    render(siteHeaderElement, new UserProfileView(films), RenderPosition.BEFOREEND);
+    const userProfilePresenter = new UserProfilePresenter(siteHeaderElement, filmsModel);
+
+    userProfilePresenter.init();
     filmCounterComponent.updateElement(films);
   })
   .catch(() => {
