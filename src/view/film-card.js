@@ -1,17 +1,23 @@
 ﻿import AbstractView from './abstract.js';
 import { getHoursAndMinutes, formatDate } from '../utils/utils.js';
 
+const LAST_CHAR_NUMBER = 4;
+const TextLength = {
+  MIN: 0,
+  MAX: 140,
+};
+
 const createFilmCardTemplate = ({filmInfo, comments, userDetails}) => (
   `<article class="film-card">
     <h3 class="film-card__title">${filmInfo.title}</h3>
     <p class="film-card__rating">${filmInfo.rating}</p>
     <p class="film-card__info">
-      <span class="film-card__year">${formatDate(filmInfo.releaseDate).substr(-4)}</span>
+      <span class="film-card__year">${formatDate(filmInfo.releaseDate).slice(-LAST_CHAR_NUMBER)}</span>
       <span class="film-card__duration">${getHoursAndMinutes(filmInfo.runtime)}</span>
       <span class="film-card__genre">${filmInfo.genres[0]}</span>
     </p>
     <img src="./${filmInfo.poster}" alt="" class="film-card__poster">
-    <p class="film-card__description">${filmInfo.description.length < 140 ? filmInfo.description : `${filmInfo.description.slice(0, 140)}...`}</p>
+    <p class="film-card__description">${filmInfo.description.length < TextLength.MAX ? filmInfo.description : `${filmInfo.description.slice(TextLength.MIN, TextLength.MAX)}...`}</p>
     <a class="film-card__comments">${comments.length} comments</a>
     <div class="film-card__controls">
       <button class="film-card__controls-item film-card__controls-item--add-to-watchlist${userDetails.isInWatchlist ? ' film-card__controls-item--active' : ''}" type="button">Add to watchlist</button>

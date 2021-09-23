@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(isBetween);
 
+const DIVIDER_IN_MINUTES = 60;
 const BAR_HEIGHT = 50;
 
 const renderChart = (statsCtx, {scoredGenres}) => {
@@ -105,7 +106,7 @@ const createStatsTemplate = ({films, profileRank, filter, totalDuration, scoredG
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">${(totalDuration - totalDuration % 60) / 60} <span class="statistic__item-description">h</span> ${totalDuration % 60} <span class="statistic__item-description">m</span></p>
+        <p class="statistic__item-text">${(totalDuration - totalDuration % DIVIDER_IN_MINUTES) / DIVIDER_IN_MINUTES} <span class="statistic__item-description">h</span> ${totalDuration % DIVIDER_IN_MINUTES} <span class="statistic__item-description">m</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
