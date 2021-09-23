@@ -126,7 +126,7 @@ export default class PopupComment extends SmartView {
   }
 
   _newCommentSubmitHandler(evt) {
-    if (evt.key === 'Enter' && evt.ctrlKey) {
+    if (evt.key === 'Enter' && (evt.ctrlKey || evt.metaKey)) {
       if (this._data.newCommentEmotion && this._data.newCommentMessage) {
         this._newComment = {
           emotion: this._data.newCommentEmotion,
