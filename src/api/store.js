@@ -12,13 +12,6 @@
     }
   }
 
-  // setItems(key, items) {
-  //   this._storage.setItem(
-  //     this._storeKey,
-  //     JSON.stringify(items),
-  //   );
-  // }
-
   setItem(key, value) {
     const store = this.getItems();
     const subStore = {
